@@ -306,6 +306,24 @@
     });
   }
 
+  // Listen for messages from background.js and forward to webpage
+  if (chrome && chrome.runtime && chrome.runtime.onMessage) {
+    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+      if (msg && msg.type === "ATTENTION_EVENT_LOGGED") {
+        window.dispatchEvent(new CustomEvent("attention:extension_event", { detail: msg }));
+        window.dispatchEvent(new CustomEvent("attention:tab_switch", { detail: msg }));
+      }
+      sendResponse({ received: true });
+      return true;
+    });
+  }
+
+  // Mark webpage so AttentionAI dashboard knows extension is installed
+  try {
+    document.documentElement.setAttribute("data-attention-extension", "connected");
+    window.__ATTENTION_AI_EXTENSION_INSTALLED__ = true;
+  } catch (_) {}
+
   // Periodic session health-check
   setInterval(checkSessionStatus, 8000);
   checkSessionStatus();

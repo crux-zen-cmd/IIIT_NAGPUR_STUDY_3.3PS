@@ -5,7 +5,8 @@
   "description": "Monitors study sessions, Coursera learning activity, and tab switches to record distraction metrics.",
   "permissions": [
     "tabs",
-    "storage"
+    "storage",
+    "alarms"
   ],
   "host_permissions": [
     "http://localhost:5050/*",

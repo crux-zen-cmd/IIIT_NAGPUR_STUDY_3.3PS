@@ -877,6 +877,7 @@ profileModal.addEventListener("click", (e) => {
 });
 
 // ── Mobile Expo App Modal ───────────────────────────────────────
+// ── Mobile Expo App Modal ───────────────────────────────────────
 const btnExpoModal = document.getElementById("btnExpoModal");
 const expoModalBackdrop = document.getElementById("expoModalBackdrop");
 const btnCloseExpoModal = document.getElementById("btnCloseExpoModal");
@@ -891,6 +892,85 @@ if (expoModalBackdrop) {
     if (e.target === expoModalBackdrop) expoModalBackdrop.classList.add("hidden");
   });
 }
+
+// ── Chrome Extension Tab Switch Modal & Bridge ─────────────────────
+const btnExtensionModal = document.getElementById("btnExtensionModal");
+const extensionModalBackdrop = document.getElementById("extensionModalBackdrop");
+const btnCloseExtensionModal = document.getElementById("btnCloseExtensionModal");
+const btnDoneExtensionModal = document.getElementById("btnDoneExtensionModal");
+const btnCopyExtPath = document.getElementById("btnCopyExtPath");
+const btnTestExtensionSwitch = document.getElementById("btnTestExtensionSwitch");
+
+if (btnExtensionModal && extensionModalBackdrop) {
+  btnExtensionModal.addEventListener("click", () => {
+    extensionModalBackdrop.classList.remove("hidden");
+    // Check if extension is active in window
+    const badge = document.getElementById("extStatusBadge");
+    const text = document.getElementById("extStatusText");
+    if (window.__ATTENTION_AI_EXTENSION_INSTALLED__ || document.documentElement.getAttribute("data-attention-extension")) {
+      if (badge) { badge.textContent = "Active"; badge.style.background = "#dcfce7"; badge.style.color = "#16a34a"; }
+      if (text) text.textContent = "Connected & Monitoring Tab Switches";
+    }
+  });
+}
+if (btnCloseExtensionModal && extensionModalBackdrop) {
+  btnCloseExtensionModal.addEventListener("click", () => extensionModalBackdrop.classList.add("hidden"));
+}
+if (btnDoneExtensionModal && extensionModalBackdrop) {
+  btnDoneExtensionModal.addEventListener("click", () => extensionModalBackdrop.classList.add("hidden"));
+}
+if (extensionModalBackdrop) {
+  extensionModalBackdrop.addEventListener("click", (e) => {
+    if (e.target === extensionModalBackdrop) extensionModalBackdrop.classList.add("hidden");
+  });
+}
+if (btnCopyExtPath) {
+  btnCopyExtPath.addEventListener("click", async () => {
+    const p = document.getElementById("extFolderPath");
+    const val = p ? p.textContent.trim() : "e:\\IIIT NAG\\extension";
+    try {
+      await navigator.clipboard.writeText(val);
+      showToast("📋 Copied extension path to clipboard!");
+    } catch (_) {
+      showToast(`Extension path: ${val}`);
+    }
+  });
+}
+if (btnTestExtensionSwitch) {
+  btnTestExtensionSwitch.addEventListener("click", async () => {
+    if (!currentActiveSession) {
+      showToast("⚠️ Start a study session first to log tab switches!");
+      return;
+    }
+    try {
+      if (typeof window.logSessionEvent === "function") {
+        await window.logSessionEvent(currentActiveSession.session_id, "TAB_SWITCH", {
+          previousTab: "Coursera · Machine Learning",
+          newTab: "YouTube - Recommended Videos",
+          previousUrl: "coursera.org",
+          newUrl: "youtube.com",
+          distraction: true,
+          source: "chrome_extension_tabs",
+        });
+        showToast("🔀 Logged TAB_SWITCH from Chrome Extension!");
+        loadSessionEvents(currentActiveSession.session_id);
+      }
+    } catch (err) {
+      showToast(`❌ ${err.message}`);
+    }
+  });
+}
+
+// Listen for tab switch events dispatched from content.js bridge
+window.addEventListener("attention:tab_switch", (e) => {
+  const detail = e.detail || {};
+  const meta = detail.metadata || {};
+  const site = meta.newTab || meta.newUrl || "Off-task tab";
+  showToast(`🔀 Tab Switch detected: ${site}`);
+  if (currentActiveSession) {
+    loadSessionEvents(currentActiveSession.session_id);
+  }
+});
 
 btnCopyUserId.addEventListener("click", async () => {
   if (currentUser) {

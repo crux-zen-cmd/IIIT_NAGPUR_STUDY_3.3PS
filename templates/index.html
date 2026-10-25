@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Attention Tracker — Real-Time Focus Analysis</title>
-  <meta name="description" content="Real-time AI-powered attention tracking system that detects focus, distraction, and drowsiness using eye tracking, gaze analysis, and head pose estimation." />
+  <meta name="description"
+    content="Real-time AI-powered attention tracking system that detects focus, distraction, and drowsiness using eye tracking, gaze analysis, and head pose estimation." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="/static/css/style.css" />
 </head>
+
 <body>
   <!-- Background particles -->
   <div class="bg-particles" id="bgParticles"></div>
@@ -18,13 +23,13 @@
     <div class="header-brand">
       <div class="brand-icon">
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-          <circle cx="14" cy="14" r="13" stroke="url(#g1)" stroke-width="2"/>
-          <circle cx="14" cy="14" r="6" fill="url(#g1)" opacity="0.8"/>
-          <circle cx="14" cy="14" r="2.5" fill="#fff"/>
+          <circle cx="14" cy="14" r="13" stroke="url(#g1)" stroke-width="2" />
+          <circle cx="14" cy="14" r="6" fill="url(#g1)" opacity="0.8" />
+          <circle cx="14" cy="14" r="2.5" fill="#fff" />
           <defs>
             <linearGradient id="g1" x1="0" y1="0" x2="28" y2="28">
-              <stop offset="0%" stop-color="#3b82f6"/>
-              <stop offset="100%" stop-color="#f59e0b"/>
+              <stop offset="0%" stop-color="#3b82f6" />
+              <stop offset="100%" stop-color="#f59e0b" />
             </linearGradient>
           </defs>
         </svg>
@@ -40,7 +45,8 @@
       <button class="nav-tab-btn" id="btnNavAnalytics">📊 Analytics & Patterns</button>
       <button class="nav-tab-btn" id="btnNavPrivacy">🔒 Privacy</button>
     </div>
-    <div class="header-status twin-state-pill" id="hudAttentionStatePill" title="5-State Attention Engine: FOCUSED, DRIFTING, DISTRACTED, RECOVERING, FATIGUE_RISK">
+    <div class="header-status twin-state-pill" id="hudAttentionStatePill"
+      title="5-State Attention Engine: FOCUSED, DRIFTING, DISTRACTED, RECOVERING, FATIGUE_RISK">
       🎯 FOCUSED
     </div>
     <div class="header-status">
@@ -66,8 +72,14 @@
       <button class="btn btn-expo-mobile" id="btnExpoModal" title="Open Mobile Companion App QR Code">
         📱 Mobile App
       </button>
+      <button class="btn btn-expo-mobile" id="btnExtensionModal" title="Open Chrome Extension Setup & Status">
+        🧩 Chrome Extension
+      </button>
       <button class="btn btn-ghost" id="btnReset" title="Reset session">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="1 4 1 10 7 10" />
+          <path d="M3.51 15a9 9 0 1 0 .49-3.5" />
+        </svg>
         Reset Camera
       </button>
     </div>
@@ -92,8 +104,10 @@
           <div class="video-header-left">
             <span class="section-label">📹 Live Feed</span>
             <div class="camera-source-selector" id="cameraSourceSelector">
-              <button type="button" class="btn-cam-source" id="btnSourceLaptop" title="Use Laptop Webcam">💻 Laptop</button>
-              <button type="button" class="btn-cam-source" id="btnSourceMobile" title="Use Phone / Mobile Front Camera">📱 Mobile Cam</button>
+              <button type="button" class="btn-cam-source" id="btnSourceLaptop" title="Use Laptop Webcam">💻
+                Laptop</button>
+              <button type="button" class="btn-cam-source" id="btnSourceMobile"
+                title="Use Phone / Mobile Front Camera">📱 Mobile Cam</button>
             </div>
           </div>
           <div class="video-header-right">
@@ -106,161 +120,13 @@
           <video id="deviceCameraVideo" autoplay playsinline muted style="display:none;"></video>
           <canvas id="mobileOffscreenCanvas" width="480" height="360" style="display:none;"></canvas>
           <div class="video-no-face hidden" id="noFaceOverlay">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M20 21a8 8 0 0 0-16 0" />
+            </svg>
             <p>No face detected</p>
             <small>Ensure your face is in frame and well-lit</small>
           </div>
-        </div>
-      </div>
-
-      <!-- ── Under-Camera Statistics Dashboard (Moved from Right to Left) ── -->
-      <div class="camera-stats-container">
-
-        <!-- ── State Card ── -->
-        <div class="state-card" id="stateCard">
-          <div class="state-icon" id="stateIcon">👁️</div>
-          <div class="state-info">
-            <div class="state-label" id="stateLabel">Initializing…</div>
-            <div class="confidence-bar-wrap">
-              <div class="confidence-bar" id="confidenceBar"></div>
-            </div>
-            <div class="confidence-text" id="confidenceText">Confidence: —</div>
-          </div>
-        </div>
-
-        <!-- ── Metrics Row ── -->
-        <div class="metrics-grid">
-          <div class="metric-card" id="metricEar">
-            <div class="metric-value" id="earValue">—</div>
-            <div class="metric-label">Eye Aspect Ratio</div>
-            <div class="metric-bar-wrap"><div class="metric-bar" id="earBar"></div></div>
-          </div>
-          <div class="metric-card" id="metricBlink">
-            <div class="metric-value" id="blinkValue">—</div>
-            <div class="metric-label">Blinks / min</div>
-          </div>
-          <div class="metric-card" id="metricGaze">
-            <div class="metric-icon" id="gazeIcon">👁</div>
-            <div class="metric-value" id="gazeValue">—</div>
-            <div class="metric-label">Gaze Direction</div>
-          </div>
-        </div>
-
-        <!-- ── Dual Column Stats: Head Pose, Timeline & Session Summary ── -->
-        <div class="camera-stats-row">
-          
-          <!-- Left Sub-column: Head Pose & Timeline -->
-          <div class="camera-stats-col">
-            <!-- ── Head Pose ── -->
-            <div class="pose-card">
-              <div class="section-label">🔄 Head Pose</div>
-              <div class="pose-metrics">
-                <div class="pose-metric">
-                  <div class="pose-label">Yaw</div>
-                  <div class="pose-gauge" id="gaugeYaw">
-                    <div class="gauge-track"><div class="gauge-fill" id="gaugeYawFill"></div></div>
-                    <div class="pose-value" id="yawValue">0°</div>
-                  </div>
-                </div>
-                <div class="pose-metric">
-                  <div class="pose-label">Pitch</div>
-                  <div class="pose-gauge" id="gaugePitch">
-                    <div class="gauge-track"><div class="gauge-fill" id="gaugePitchFill"></div></div>
-                    <div class="pose-value" id="pitchValue">0°</div>
-                  </div>
-                </div>
-                <div class="pose-metric">
-                  <div class="pose-label">Roll</div>
-                  <div class="pose-gauge" id="gaugeRoll">
-                    <div class="gauge-track"><div class="gauge-fill" id="gaugeRollFill"></div></div>
-                    <div class="pose-value" id="rollValue">0°</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- ── Timeline Chart & Visual Stream (Panel 3) ── -->
-            <div class="timeline-card">
-              <div class="section-label">📈 Attention Timeline & Milestones</div>
-              <canvas id="timelineChart" height="80"></canvas>
-              <div class="visual-timeline-wrap">
-                <div class="visual-timeline-label">⚡ Real-Time Attention Transitions:</div>
-                <div class="visual-timeline-stream" id="visualTimelineStream">
-                  <div class="timeline-empty-hint">Start a study session to track milestones.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Sub-column: Session Summary ── -->
-          <div class="camera-stats-col">
-            <!-- ── Session Summary ── -->
-            <div class="session-card">
-              <div class="section-label">📊 Session Summary</div>
-              <div class="session-timer" id="sessionTimer">00:00:00</div>
-              <div class="donut-wrap">
-                <canvas id="donutChart" width="160" height="160"></canvas>
-                <div class="donut-center" id="donutCenter">
-                  <div class="donut-pct" id="focusedPct">—</div>
-                  <div class="donut-sub">Focused</div>
-                </div>
-              </div>
-              <div class="session-legend">
-                <div class="legend-item"><span class="legend-dot focused"></span>Focused <span id="lgFocused">—%</span></div>
-                <div class="legend-item"><span class="legend-dot distracted"></span>Distracted <span id="lgDistracted">—%</span></div>
-                <div class="legend-item"><span class="legend-dot drowsy"></span>Drowsy <span id="lgDrowsy">—%</span></div>
-              </div>
-
-              <!-- ── Performance Highlights ── -->
-              <div class="session-highlights">
-                <div class="highlight-row" id="hlFocusStreak">
-                  <span class="hl-icon">🏆</span>
-                  <div class="hl-info">
-                    <div class="hl-label">Best Focus Streak</div>
-                    <div class="hl-value" id="hlFocusStreakVal">—</div>
-                  </div>
-                </div>
-                <div class="highlight-row" id="hlDistract">
-                  <span class="hl-icon">📉</span>
-                  <div class="hl-info">
-                    <div class="hl-label">Longest Distraction</div>
-                    <div class="hl-value" id="hlDistractVal">—</div>
-                  </div>
-                </div>
-                <div class="highlight-row" id="hlScore">
-                  <span class="hl-icon">📊</span>
-                  <div class="hl-info">
-                    <div class="hl-label">Avg Attention Score</div>
-                    <div class="hl-value" id="hlScoreVal">—</div>
-                  </div>
-                  <div class="hl-bar-wrap">
-                    <div class="hl-bar" id="hlScoreBar" style="width:0%"></div>
-                  </div>
-                </div>
-                <div class="highlight-row" id="hlTabSwitches">
-                  <span class="hl-icon">🔀</span>
-                  <div class="hl-info">
-                    <div class="hl-label">Tab Switches</div>
-                    <div class="hl-value" id="hlTabSwitchVal">0</div>
-                  </div>
-                </div>
-                <div class="highlight-row" id="hlDistractionDur">
-                  <span class="hl-icon">⏱️</span>
-                  <div class="hl-info">
-                    <div class="hl-label">Distraction Away Time</div>
-                    <div class="hl-value" id="hlDistractionDurVal">0s</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Export -->
-              <button class="btn btn-export" id="btnExportCSV" title="Download session report as CSV">
-                📅 Export CSV
-              </button>
-
-            </div>
-          </div>
-
         </div>
       </div>
     </section>
@@ -280,11 +146,17 @@
           </div>
           <div class="course-presets-row">
             <span class="preset-label">Quick select:</span>
-            <button type="button" class="btn-preset" data-course="Machine Learning Specialization" data-platform="Coursera" data-url="https://www.coursera.org/specializations/machine-learning-introduction">Coursera · ML</button>
-            <button type="button" class="btn-preset" data-course="Deep Learning Specialization" data-platform="Coursera" data-url="https://www.coursera.org/specializations/deep-learning">Coursera · DL</button>
-            <button type="button" class="btn-preset" data-course="CS50: Introduction to Computer Science" data-platform="edX" data-url="https://www.edx.org/course/cs50s-introduction-to-computer-science">edX · CS50</button>
+            <button type="button" class="btn-preset" data-course="Machine Learning Specialization"
+              data-platform="Coursera"
+              data-url="https://www.coursera.org/specializations/machine-learning-introduction">Coursera · ML</button>
+            <button type="button" class="btn-preset" data-course="Deep Learning Specialization" data-platform="Coursera"
+              data-url="https://www.coursera.org/specializations/deep-learning">Coursera · DL</button>
+            <button type="button" class="btn-preset" data-course="CS50: Introduction to Computer Science"
+              data-platform="edX" data-url="https://www.edx.org/course/cs50s-introduction-to-computer-science">edX ·
+              CS50</button>
           </div>
-          <input type="text" class="session-input" id="inputCourseName" placeholder="Course Name (e.g. Machine Learning Specialization)" />
+          <input type="text" class="session-input" id="inputCourseName"
+            placeholder="Course Name (e.g. Machine Learning Specialization)" />
           <div class="session-input-row">
             <select class="session-select" id="selectPlatform">
               <option value="Coursera">Coursera</option>
@@ -377,14 +249,22 @@
               <span class="events-count-badge" id="eventsCountBadge">0 events</span>
             </div>
             <div class="events-test-actions">
-              <button class="btn-event-quick" id="btnSimDrowsy" type="button" title="Simulate Drowsiness episode">😴 Sim Drowsy</button>
-              <button class="btn-event-quick" id="btnSimDistracted" type="button" title="Simulate Focus Loss episode">👀 Sim Distracted</button>
-              <button class="btn-event-quick" id="btnSimFocused" type="button" title="Return to Focused state">🎯 Sim Focused</button>
-              <button class="btn-event-quick" id="btnTestTabSwitch" type="button" title="Log TAB_SWITCH event">🔀 Tab Switch</button>
-              <button class="btn-event-quick" id="btnTestVideoStart" type="button" title="Log VIDEO_STARTED event">▶ Start Video</button>
-              <button class="btn-event-quick" id="btnTestVideoPause" type="button" title="Log VIDEO_PAUSED event">⏸ Pause Video</button>
-              <button class="btn-event-quick" id="btnTestVideoEnd" type="button" title="Log VIDEO_COMPLETED event">🏁 End Video</button>
-              <button class="btn-event-quick" id="btnTestPageChange" type="button" title="Log PAGE_CHANGED event">📄 Next Module</button>
+              <button class="btn-event-quick" id="btnSimDrowsy" type="button" title="Simulate Drowsiness episode">😴 Sim
+                Drowsy</button>
+              <button class="btn-event-quick" id="btnSimDistracted" type="button" title="Simulate Focus Loss episode">👀
+                Sim Distracted</button>
+              <button class="btn-event-quick" id="btnSimFocused" type="button" title="Return to Focused state">🎯 Sim
+                Focused</button>
+              <button class="btn-event-quick" id="btnTestTabSwitch" type="button" title="Log TAB_SWITCH event">🔀 Tab
+                Switch</button>
+              <button class="btn-event-quick" id="btnTestVideoStart" type="button" title="Log VIDEO_STARTED event">▶
+                Start Video</button>
+              <button class="btn-event-quick" id="btnTestVideoPause" type="button" title="Log VIDEO_PAUSED event">⏸
+                Pause Video</button>
+              <button class="btn-event-quick" id="btnTestVideoEnd" type="button" title="Log VIDEO_COMPLETED event">🏁
+                End Video</button>
+              <button class="btn-event-quick" id="btnTestPageChange" type="button" title="Log PAGE_CHANGED event">📄
+                Next Module</button>
             </div>
             <div class="events-scroll-list" id="eventsScrollList">
               <div class="events-empty-hint" id="eventsEmptyHint">No events logged yet for this session</div>
@@ -417,6 +297,151 @@
         </div>
         <div class="today-sessions-list" id="todaySessionsList">
           <div class="today-empty-hint">No sessions completed today yet. Start a session to track focus.</div>
+        </div>
+      </div>
+
+      <!-- ── State Card ── -->
+      <div class="state-card" id="stateCard">
+        <div class="state-icon" id="stateIcon">👁️</div>
+        <div class="state-info">
+          <div class="state-label" id="stateLabel">Initializing…</div>
+          <div class="confidence-bar-wrap">
+            <div class="confidence-bar" id="confidenceBar"></div>
+          </div>
+          <div class="confidence-text" id="confidenceText">Confidence: —</div>
+        </div>
+      </div>
+
+      <!-- ── Metrics Row ── -->
+      <div class="metrics-grid">
+        <div class="metric-card" id="metricEar">
+          <div class="metric-value" id="earValue">—</div>
+          <div class="metric-label">Eye Aspect Ratio</div>
+          <div class="metric-bar-wrap">
+            <div class="metric-bar" id="earBar"></div>
+          </div>
+        </div>
+        <div class="metric-card" id="metricBlink">
+          <div class="metric-value" id="blinkValue">—</div>
+          <div class="metric-label">Blinks / min</div>
+        </div>
+        <div class="metric-card" id="metricGaze">
+          <div class="metric-icon" id="gazeIcon">👁</div>
+          <div class="metric-value" id="gazeValue">—</div>
+          <div class="metric-label">Gaze Direction</div>
+        </div>
+      </div>
+
+      <!-- ── Head Pose ── -->
+      <div class="pose-card">
+        <div class="section-label">🔄 Head Pose</div>
+        <div class="pose-metrics">
+          <div class="pose-metric">
+            <div class="pose-label">Yaw</div>
+            <div class="pose-gauge" id="gaugeYaw">
+              <div class="gauge-track">
+                <div class="gauge-fill" id="gaugeYawFill"></div>
+              </div>
+              <div class="pose-value" id="yawValue">0°</div>
+            </div>
+          </div>
+          <div class="pose-metric">
+            <div class="pose-label">Pitch</div>
+            <div class="pose-gauge" id="gaugePitch">
+              <div class="gauge-track">
+                <div class="gauge-fill" id="gaugePitchFill"></div>
+              </div>
+              <div class="pose-value" id="pitchValue">0°</div>
+            </div>
+          </div>
+          <div class="pose-metric">
+            <div class="pose-label">Roll</div>
+            <div class="pose-gauge" id="gaugeRoll">
+              <div class="gauge-track">
+                <div class="gauge-fill" id="gaugeRollFill"></div>
+              </div>
+              <div class="pose-value" id="rollValue">0°</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Session Summary ── -->
+      <div class="session-card">
+        <div class="section-label">📊 Session Summary</div>
+        <div class="session-timer" id="sessionTimer">00:00:00</div>
+        <div class="donut-wrap">
+          <canvas id="donutChart" width="160" height="160"></canvas>
+          <div class="donut-center" id="donutCenter">
+            <div class="donut-pct" id="focusedPct">—</div>
+            <div class="donut-sub">Focused</div>
+          </div>
+        </div>
+        <div class="session-legend">
+          <div class="legend-item"><span class="legend-dot focused"></span>Focused <span id="lgFocused">—%</span></div>
+          <div class="legend-item"><span class="legend-dot distracted"></span>Distracted <span
+              id="lgDistracted">—%</span></div>
+          <div class="legend-item"><span class="legend-dot drowsy"></span>Drowsy <span id="lgDrowsy">—%</span></div>
+        </div>
+
+        <!-- ── Performance Highlights ── -->
+        <div class="session-highlights">
+          <div class="highlight-row" id="hlFocusStreak">
+            <span class="hl-icon">🏆</span>
+            <div class="hl-info">
+              <div class="hl-label">Best Focus Streak</div>
+              <div class="hl-value" id="hlFocusStreakVal">—</div>
+            </div>
+          </div>
+          <div class="highlight-row" id="hlDistract">
+            <span class="hl-icon">📉</span>
+            <div class="hl-info">
+              <div class="hl-label">Longest Distraction</div>
+              <div class="hl-value" id="hlDistractVal">—</div>
+            </div>
+          </div>
+          <div class="highlight-row" id="hlScore">
+            <span class="hl-icon">📊</span>
+            <div class="hl-info">
+              <div class="hl-label">Avg Attention Score</div>
+              <div class="hl-value" id="hlScoreVal">—</div>
+            </div>
+            <div class="hl-bar-wrap">
+              <div class="hl-bar" id="hlScoreBar" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="highlight-row" id="hlTabSwitches">
+            <span class="hl-icon">🔀</span>
+            <div class="hl-info">
+              <div class="hl-label">Tab Switches</div>
+              <div class="hl-value" id="hlTabSwitchVal">0</div>
+            </div>
+          </div>
+          <div class="highlight-row" id="hlDistractionDur">
+            <span class="hl-icon">⏱️</span>
+            <div class="hl-info">
+              <div class="hl-label">Distraction Away Time</div>
+              <div class="hl-value" id="hlDistractionDurVal">0s</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Export -->
+        <button class="btn btn-export" id="btnExportCSV" title="Download session report as CSV">
+          📅 Export CSV
+        </button>
+
+      </div>
+
+      <!-- ── Timeline Chart & Visual Stream (Panel 3) ── -->
+      <div class="timeline-card">
+        <div class="section-label">📈 Attention Timeline & Milestones</div>
+        <canvas id="timelineChart" height="80"></canvas>
+        <div class="visual-timeline-wrap">
+          <div class="visual-timeline-label">⚡ Real-Time Attention Transitions:</div>
+          <div class="visual-timeline-stream" id="visualTimelineStream">
+            <div class="timeline-empty-hint">Start a study session to track milestones.</div>
+          </div>
         </div>
       </div>
 
@@ -559,7 +584,9 @@
             </tr>
           </thead>
           <tbody id="anSessionHistoryBody">
-            <tr><td colspan="7" class="an-empty-row">Loading session history...</td></tr>
+            <tr>
+              <td colspan="7" class="an-empty-row">Loading session history...</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -574,7 +601,8 @@
         <p class="twin-main-sub">Personal behavioral modeling, counterfactual simulation & closed-loop adaptation.</p>
       </div>
       <div class="twin-header-actions">
-        <button class="btn btn-ghost" id="btnRecomputeTwin" title="Synthesize Digital Twin from complete session history">
+        <button class="btn btn-ghost" id="btnRecomputeTwin"
+          title="Synthesize Digital Twin from complete session history">
           🔄 Recompute Twin Profile
         </button>
       </div>
@@ -587,13 +615,17 @@
           <span class="demo-icon">🎮</span>
           <div>
             <h4 class="demo-title">DEMO NOTIFICATION MODE</h4>
-            <span class="demo-sub">Simulated Interruption Quick-Triggers — Explicitly labelled: <strong>SIMULATED NOTIFICATION (Not intercepting OS)</strong></span>
+            <span class="demo-sub">Simulated Interruption Quick-Triggers — Explicitly labelled: <strong>SIMULATED
+                NOTIFICATION (Not intercepting OS)</strong></span>
           </div>
         </div>
         <div class="demo-actions-top">
-          <button class="btn btn-sm btn-ghost" id="btnSeedDemoPersona" type="button" title="Seed 12 calibrated sessions for Ada Lovelace">✨ Seed Demo Persona</button>
-          <button class="btn btn-sm btn-ghost" id="btnCleanDemoData" type="button" title="Purge demo data without touching real user sessions">🧹 Clean Demo Data</button>
-          <button class="btn btn-sm btn-primary" id="btnRunDeterministicFlow" type="button" title="Run full 8-step closed loop automated walkthrough">▶ Run Deterministic Flow</button>
+          <button class="btn btn-sm btn-ghost" id="btnSeedDemoPersona" type="button"
+            title="Seed 12 calibrated sessions for Ada Lovelace">✨ Seed Demo Persona</button>
+          <button class="btn btn-sm btn-ghost" id="btnCleanDemoData" type="button"
+            title="Purge demo data without touching real user sessions">🧹 Clean Demo Data</button>
+          <button class="btn btn-sm btn-primary" id="btnRunDeterministicFlow" type="button"
+            title="Run full 8-step closed loop automated walkthrough">▶ Run Deterministic Flow</button>
         </div>
       </div>
 
@@ -742,7 +774,9 @@
                 <span class="pattern-name">💻 Coding & Programming</span>
                 <span class="pattern-score text-green">84% Resilience</span>
               </div>
-              <div class="pattern-bar-wrap"><div class="pattern-bar bar-green" style="width: 84%"></div></div>
+              <div class="pattern-bar-wrap">
+                <div class="pattern-bar bar-green" style="width: 84%"></div>
+              </div>
               <span class="pattern-desc">High flow state. Notifications cause severe 5x recovery lag.</span>
             </div>
             <div class="pattern-item">
@@ -750,7 +784,9 @@
                 <span class="pattern-name">📖 Reading & Research</span>
                 <span class="pattern-score text-cyan">72% Resilience</span>
               </div>
-              <div class="pattern-bar-wrap"><div class="pattern-bar bar-cyan" style="width: 72%"></div></div>
+              <div class="pattern-bar-wrap">
+                <div class="pattern-bar bar-cyan" style="width: 72%"></div>
+              </div>
               <span class="pattern-desc">Moderate resilience. Tab switching bursts increase distraction risk.</span>
             </div>
             <div class="pattern-item">
@@ -758,7 +794,9 @@
                 <span class="pattern-name">🎥 Video Lecture Watching</span>
                 <span class="pattern-score text-amber">61% Resilience</span>
               </div>
-              <div class="pattern-bar-wrap"><div class="pattern-bar bar-amber" style="width: 61%"></div></div>
+              <div class="pattern-bar-wrap">
+                <div class="pattern-bar bar-amber" style="width: 61%"></div>
+              </div>
               <span class="pattern-desc">Passive consumption vulnerability. Eye fatigue accelerates after 30m.</span>
             </div>
             <div class="pattern-item">
@@ -766,7 +804,9 @@
                 <span class="pattern-name">🌐 Prolonged Browsing Risk</span>
                 <span class="pattern-score text-red">High Overrun Risk (68%)</span>
               </div>
-              <div class="pattern-bar-wrap"><div class="pattern-bar bar-red" style="width: 68%"></div></div>
+              <div class="pattern-bar-wrap">
+                <div class="pattern-bar bar-red" style="width: 68%"></div>
+              </div>
               <span class="pattern-desc">Social & communication tabs frequently trigger rabbit hole sessions.</span>
             </div>
           </div>
@@ -787,7 +827,8 @@
             <span class="twin-badge badge-sim">ALLOW vs DEFER</span>
           </div>
           <p class="sim-card-intro">
-            Simulate the attention impact of an incoming notification before it interrupts the user. Tests what would happen if delivered immediately versus deferred.
+            Simulate the attention impact of an incoming notification before it interrupts the user. Tests what would
+            happen if delivered immediately versus deferred.
           </p>
 
           <!-- Simulator Config Form -->
@@ -802,7 +843,8 @@
             <div class="sim-form-grid">
               <div class="sim-field">
                 <label for="simSourceInput">Notification Source</label>
-                <input type="text" class="sim-input" id="simSourceInput" value="Discord" placeholder="e.g. Slack, Discord, Email" />
+                <input type="text" class="sim-input" id="simSourceInput" value="Discord"
+                  placeholder="e.g. Slack, Discord, Email" />
               </div>
               <div class="sim-field">
                 <label for="simCategorySelect">Category</label>
@@ -842,7 +884,8 @@
           <!-- Dynamic Simulation Result Container -->
           <div class="sim-result-container" id="simResultContainer">
             <div class="sim-placeholder-hint">
-              Select a preset or configure parameters above, then click <strong>"Simulate Counterfactual"</strong> to compare immediate delivery vs deferred delivery paths.
+              Select a preset or configure parameters above, then click <strong>"Simulate Counterfactual"</strong> to
+              compare immediate delivery vs deferred delivery paths.
             </div>
           </div>
         </div>
@@ -857,7 +900,8 @@
             <span class="twin-badge badge-active" id="accLearningStatus">CALIBRATING</span>
           </div>
           <p class="sim-card-intro">
-            Closed-loop telemetry evaluates simulated predictions against real outcomes to continuously update your twin's sensitivity and recovery baselines.
+            Closed-loop telemetry evaluates simulated predictions against real outcomes to continuously update your
+            twin's sensitivity and recovery baselines.
           </p>
 
           <!-- Accuracy Overview 4-Stat Box -->
@@ -883,7 +927,8 @@
           <!-- 'LAST PREDICTION' Telemetry Widget -->
           <div class="last-prediction-wrap" id="lastPredictionWidget">
             <div class="lp-empty">
-              No closed-loop evaluations completed yet. Run a simulation and click "Record Outcome & Learn" to see real-time error tracking.
+              No closed-loop evaluations completed yet. Run a simulation and click "Record Outcome & Learn" to see
+              real-time error tracking.
             </div>
           </div>
 
@@ -899,7 +944,8 @@
     <div class="privacy-header-bar">
       <div>
         <h2 class="privacy-main-title">🔒 Privacy, Agency & Data Governance</h2>
-        <p class="privacy-main-sub">Your cognitive telemetry belongs to you. Transparent on-device computation with zero raw video transfer.</p>
+        <p class="privacy-main-sub">Your cognitive telemetry belongs to you. Transparent on-device computation with zero
+          raw video transfer.</p>
       </div>
     </div>
 
@@ -909,7 +955,8 @@
         <div class="trust-icon">💻</div>
         <h4 class="trust-title">100% Local CV Inference</h4>
         <p class="trust-desc">
-          MediaPipe FaceMesh executes directly within your browser runtime using WebGL/WebAssembly. Landmark vectors are analyzed in volatile memory.
+          MediaPipe FaceMesh executes directly within your browser runtime using WebGL/WebAssembly. Landmark vectors are
+          analyzed in volatile memory.
         </p>
       </div>
 
@@ -917,7 +964,8 @@
         <div class="trust-icon">🚫</div>
         <h4 class="trust-title">Zero Raw Video Stored</h4>
         <p class="trust-desc">
-          Camera frames are never uploaded, recorded, or saved to any disk or external server. Only numerical telemetry (EAR, head pose angles) is processed.
+          Camera frames are never uploaded, recorded, or saved to any disk or external server. Only numerical telemetry
+          (EAR, head pose angles) is processed.
         </p>
       </div>
 
@@ -925,7 +973,8 @@
         <div class="trust-icon">👁️</div>
         <h4 class="trust-title">Zero Screen Capture</h4>
         <p class="trust-desc">
-          The study tracker does not record your screen or take screenshots. Page context is derived exclusively through URL platform tags and active window title metadata.
+          The study tracker does not record your screen or take screenshots. Page context is derived exclusively through
+          URL platform tags and active window title metadata.
         </p>
       </div>
 
@@ -933,7 +982,8 @@
         <div class="trust-icon">🛡️</div>
         <h4 class="trust-title">Metadata-Only Event Logs</h4>
         <p class="trust-desc">
-          Interruption events track notification category (MESSAGE, EMAIL) and time duration. Message contents, keystrokes, and text are never inspected.
+          Interruption events track notification category (MESSAGE, EMAIL) and time duration. Message contents,
+          keystrokes, and text are never inspected.
         </p>
       </div>
     </div>
@@ -952,7 +1002,8 @@
         <div class="privacy-button-box">
           <div class="p-btn-info">
             <h5>Download Personal Telemetry</h5>
-            <p>Export all historical sessions, events, attention profiles, and counterfactual predictions as a JSON bundle.</p>
+            <p>Export all historical sessions, events, attention profiles, and counterfactual predictions as a JSON
+              bundle.</p>
           </div>
           <button class="btn btn-primary" id="btnExportPrivacyData">
             📦 Export Data (JSON)
@@ -962,7 +1013,8 @@
         <div class="privacy-button-box">
           <div class="p-btn-info">
             <h5>Reset Digital Twin Model</h5>
-            <p>Erase personalized sensitivities, recovery rates, and diurnal windows. Resets profile back to cold-start LEARNING state.</p>
+            <p>Erase personalized sensitivities, recovery rates, and diurnal windows. Resets profile back to cold-start
+              LEARNING state.</p>
           </div>
           <button class="btn btn-warning" id="btnClearTwinProfile">
             🔄 Reset Twin Profile
@@ -972,7 +1024,8 @@
         <div class="privacy-button-box">
           <div class="p-btn-info">
             <h5>Permanently Erase Session Events</h5>
-            <p>Deletes all raw study session event timestamps, tab-switch records, and drowsiness history from the SQLite database.</p>
+            <p>Deletes all raw study session event timestamps, tab-switch records, and drowsiness history from the
+              SQLite database.</p>
           </div>
           <button class="btn btn-danger" id="btnPurgeHistory">
             🗑️ Purge All History
@@ -1016,20 +1069,72 @@
 
   <!-- ── EXPO MOBILE APP MODAL ───────────────────────── -->
   <div class="profile-modal-backdrop hidden" id="expoModalBackdrop">
-    <div class="profile-modal-card" style="text-align: center; max-width: 420px; border: 1.5px solid rgba(59,130,246,0.4);">
+    <div class="profile-modal-card"
+      style="text-align: center; max-width: 420px; border: 1.5px solid rgba(59,130,246,0.4);">
       <div class="modal-header">
         <h3 class="modal-title" style="color: #60a5fa;">📱 FocusTwin Mobile Companion</h3>
         <button class="modal-close" id="btnCloseExpoModal">✕</button>
       </div>
       <p style="color: #9ca3af; font-size: 13px; margin: 8px 0 16px; line-height: 1.4;">
-        Scan with <strong>Expo Go</strong> on iOS / Android (connected to same Wi-Fi) to run FocusTwin natively on your phone.
+        Scan with <strong>Expo Go</strong> on iOS / Android (connected to same Wi-Fi) to run FocusTwin natively on your
+        phone.
       </p>
-      <div style="background: #ffffff; padding: 14px; border-radius: 14px; display: inline-block; box-shadow: 0 4px 24px rgba(0,0,0,0.6);">
-        <img src="/static/focustwin_expo_qr.png" alt="FocusTwin Expo QR Code" style="width: 250px; height: 310px; object-fit: contain; display: block;" />
+      <div
+        style="background: #ffffff; padding: 14px; border-radius: 14px; display: inline-block; box-shadow: 0 4px 24px rgba(0,0,0,0.6);">
+        <img src="/static/focustwin_expo_qr.png" alt="FocusTwin Expo QR Code"
+          style="width: 250px; height: 310px; object-fit: contain; display: block;" />
       </div>
-      <div style="margin-top: 16px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+      <div
+        style="margin-top: 16px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
         <div style="font-size: 11px; color: #9ca3af; margin-bottom: 4px;">Direct Expo URL (or manual entry):</div>
-        <code style="font-size: 13px; color: #22d67a; font-weight: bold; user-select: all;">exp://192.168.110.224:8081</code>
+        <code
+          style="font-size: 13px; color: #22d67a; font-weight: bold; user-select: all;">exp://192.168.110.224:8081</code>
+      </div>
+    </div>
+  <!-- ── CHROME EXTENSION MODAL ───────────────────────── -->
+  <div class="profile-modal-backdrop hidden" id="extensionModalBackdrop">
+    <div class="profile-modal-card"
+      style="text-align: left; max-width: 480px; border: 1.5px solid rgba(37,99,235,0.4); background: #ffffff; color: #0f172a; padding: 22px;">
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <h3 class="modal-title" style="color: #2563eb; font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+          <span>🧩</span> Tab Switch Tracker (Chrome Extension)
+        </h3>
+        <button class="modal-close" id="btnCloseExtensionModal" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #64748b;">✕</button>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px; background: #f8fafc; border: 1px solid rgba(15,23,42,0.12); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px;">
+        <span style="font-size: 1.2rem;">🔌</span>
+        <div style="flex: 1;">
+          <div style="font-size: 12px; font-weight: 700; color: #0f172a;">Status: <span id="extStatusText" style="color: #16a34a;">Ready & Active</span></div>
+          <div style="font-size: 11px; color: #64748b;">Tracks tab switches, off-task browsing, and window blur events</div>
+        </div>
+        <span class="fb-badge online" id="extStatusBadge" style="background: #dcfce7; color: #16a34a; font-weight: 700; font-size: 11px; padding: 3px 8px; border-radius: 9999px;">Installed</span>
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <h4 style="font-size: 12px; font-weight: 800; color: #334155; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">How to Load in Chrome / Edge / Brave:</h4>
+        <ol style="font-size: 12px; color: #334155; line-height: 1.6; padding-left: 20px; margin: 0 0 10px 0;">
+          <li>Navigate to <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #2563eb; font-weight: 600;">chrome://extensions/</code></li>
+          <li>Turn ON <strong>"Developer mode"</strong> (toggle in top right).</li>
+          <li>Click <strong>"Load unpacked"</strong> and select this folder:</li>
+        </ol>
+        <div style="background: #f1f5f9; border: 1px solid rgba(15,23,42,0.12); border-radius: 6px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+          <code id="extFolderPath" style="font-size: 12px; color: #0f172a; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">e:\IIIT NAG\extension</code>
+          <button type="button" class="btn btn-sm btn-ghost" id="btnCopyExtPath" style="padding: 3px 8px; font-size: 11px;">📋 Copy</button>
+        </div>
+      </div>
+
+      <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px 12px; margin-bottom: 16px; font-size: 11.5px; color: #1e40af; line-height: 1.45;">
+        🔒 <strong>Privacy Protected:</strong> The extension only tracks top-level domain switches (e.g. <code>coursera.org</code> ➔ <code>youtube.com</code>) to calculate context switching lag. Zero keystrokes, personal messages, or full search histories are stored.
+      </div>
+
+      <div style="display: flex; gap: 8px; justify-content: flex-end;">
+        <button type="button" class="btn btn-primary" id="btnTestExtensionSwitch" style="font-size: 12px; padding: 8px 14px;">
+          🔀 Simulate Tab Switch
+        </button>
+        <button type="button" class="btn btn-ghost" id="btnDoneExtensionModal" style="font-size: 12px; padding: 8px 14px;">
+          Done
+        </button>
       </div>
     </div>
   </div>
@@ -1041,4 +1146,5 @@
   <script src="/static/js/digital_twin_ui.js?v=8.1"></script>
   <script type="module" src="/static/js/firebase-init.js?v=8.1"></script>
 </body>
+
 </html>
