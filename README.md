@@ -8,14 +8,16 @@ A fully local, real-time attention tracking system that uses your webcam to dete
 
 | Feature | Description |
 |---|---|
-| Face Detection | MediaPipe Face Mesh — 468 landmarks |
+| Face Detection | MediaPipe Face Mesh — 478 landmarks (468 face + 10 iris) |
 | Eye Aspect Ratio (EAR) | Blink detection & drowsiness scoring |
 | Gaze Estimation | Iris tracking → left/right/center/up/down |
 | Head Pose | Yaw, Pitch, Roll via solvePnP |
-| Attention State | Focused / Distracted / Drowsy |
-| Real-Time Dashboard | Live MJPEG stream + metrics |
-| Session Analytics | Pie chart + timeline + % focus time |
-| Session Logging | JSON records saved to `data/` folder |
+| Attention State | 5-State Engine: Focused, Drifting, Distracted, Recovering, Fatigue |
+| Tab Switch Tracking | Chrome Extension for tab activation & in-tab URL monitoring |
+| Digital Twin Engine | Bayesian predictive counterfactual interruption simulation |
+| Real-Time Dashboard | High-contrast light mode UI + live telemetry metrics |
+| Session Analytics | Pie chart + attention timeline + focus streak stats |
+| Session Logging | SQLite database + JSON export |
 
 ---
 

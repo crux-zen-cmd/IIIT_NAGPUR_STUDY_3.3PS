@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────
-#  AttentionAI — startup script
+#  AttentionAI & FocusTwin — Startup Script (v2.1)
 #  Usage: ./run.sh
 # ─────────────────────────────────────────────────────────────
 
