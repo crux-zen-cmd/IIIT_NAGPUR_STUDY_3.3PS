@@ -351,6 +351,32 @@ body {
 .video-no-face small { font-size: 0.75rem; opacity: 0.6; }
 .hidden { display: none !important; }
 
+/* ── Under-Camera Statistics Layout ──────────────────────────── */
+.camera-stats-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.camera-stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.camera-stats-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 960px) {
+  .camera-stats-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ── Dashboard Column ────────────────────────────────────────── */
 .dashboard { display: flex; flex-direction: column; gap: 14px; }
 

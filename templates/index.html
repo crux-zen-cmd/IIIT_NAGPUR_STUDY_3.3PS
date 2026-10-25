@@ -112,6 +112,157 @@
           </div>
         </div>
       </div>
+
+      <!-- ── Under-Camera Statistics Dashboard (Moved from Right to Left) ── -->
+      <div class="camera-stats-container">
+
+        <!-- ── State Card ── -->
+        <div class="state-card" id="stateCard">
+          <div class="state-icon" id="stateIcon">👁️</div>
+          <div class="state-info">
+            <div class="state-label" id="stateLabel">Initializing…</div>
+            <div class="confidence-bar-wrap">
+              <div class="confidence-bar" id="confidenceBar"></div>
+            </div>
+            <div class="confidence-text" id="confidenceText">Confidence: —</div>
+          </div>
+        </div>
+
+        <!-- ── Metrics Row ── -->
+        <div class="metrics-grid">
+          <div class="metric-card" id="metricEar">
+            <div class="metric-value" id="earValue">—</div>
+            <div class="metric-label">Eye Aspect Ratio</div>
+            <div class="metric-bar-wrap"><div class="metric-bar" id="earBar"></div></div>
+          </div>
+          <div class="metric-card" id="metricBlink">
+            <div class="metric-value" id="blinkValue">—</div>
+            <div class="metric-label">Blinks / min</div>
+          </div>
+          <div class="metric-card" id="metricGaze">
+            <div class="metric-icon" id="gazeIcon">👁</div>
+            <div class="metric-value" id="gazeValue">—</div>
+            <div class="metric-label">Gaze Direction</div>
+          </div>
+        </div>
+
+        <!-- ── Dual Column Stats: Head Pose, Timeline & Session Summary ── -->
+        <div class="camera-stats-row">
+          
+          <!-- Left Sub-column: Head Pose & Timeline -->
+          <div class="camera-stats-col">
+            <!-- ── Head Pose ── -->
+            <div class="pose-card">
+              <div class="section-label">🔄 Head Pose</div>
+              <div class="pose-metrics">
+                <div class="pose-metric">
+                  <div class="pose-label">Yaw</div>
+                  <div class="pose-gauge" id="gaugeYaw">
+                    <div class="gauge-track"><div class="gauge-fill" id="gaugeYawFill"></div></div>
+                    <div class="pose-value" id="yawValue">0°</div>
+                  </div>
+                </div>
+                <div class="pose-metric">
+                  <div class="pose-label">Pitch</div>
+                  <div class="pose-gauge" id="gaugePitch">
+                    <div class="gauge-track"><div class="gauge-fill" id="gaugePitchFill"></div></div>
+                    <div class="pose-value" id="pitchValue">0°</div>
+                  </div>
+                </div>
+                <div class="pose-metric">
+                  <div class="pose-label">Roll</div>
+                  <div class="pose-gauge" id="gaugeRoll">
+                    <div class="gauge-track"><div class="gauge-fill" id="gaugeRollFill"></div></div>
+                    <div class="pose-value" id="rollValue">0°</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Timeline Chart & Visual Stream (Panel 3) ── -->
+            <div class="timeline-card">
+              <div class="section-label">📈 Attention Timeline & Milestones</div>
+              <canvas id="timelineChart" height="80"></canvas>
+              <div class="visual-timeline-wrap">
+                <div class="visual-timeline-label">⚡ Real-Time Attention Transitions:</div>
+                <div class="visual-timeline-stream" id="visualTimelineStream">
+                  <div class="timeline-empty-hint">Start a study session to track milestones.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Sub-column: Session Summary ── -->
+          <div class="camera-stats-col">
+            <!-- ── Session Summary ── -->
+            <div class="session-card">
+              <div class="section-label">📊 Session Summary</div>
+              <div class="session-timer" id="sessionTimer">00:00:00</div>
+              <div class="donut-wrap">
+                <canvas id="donutChart" width="160" height="160"></canvas>
+                <div class="donut-center" id="donutCenter">
+                  <div class="donut-pct" id="focusedPct">—</div>
+                  <div class="donut-sub">Focused</div>
+                </div>
+              </div>
+              <div class="session-legend">
+                <div class="legend-item"><span class="legend-dot focused"></span>Focused <span id="lgFocused">—%</span></div>
+                <div class="legend-item"><span class="legend-dot distracted"></span>Distracted <span id="lgDistracted">—%</span></div>
+                <div class="legend-item"><span class="legend-dot drowsy"></span>Drowsy <span id="lgDrowsy">—%</span></div>
+              </div>
+
+              <!-- ── Performance Highlights ── -->
+              <div class="session-highlights">
+                <div class="highlight-row" id="hlFocusStreak">
+                  <span class="hl-icon">🏆</span>
+                  <div class="hl-info">
+                    <div class="hl-label">Best Focus Streak</div>
+                    <div class="hl-value" id="hlFocusStreakVal">—</div>
+                  </div>
+                </div>
+                <div class="highlight-row" id="hlDistract">
+                  <span class="hl-icon">📉</span>
+                  <div class="hl-info">
+                    <div class="hl-label">Longest Distraction</div>
+                    <div class="hl-value" id="hlDistractVal">—</div>
+                  </div>
+                </div>
+                <div class="highlight-row" id="hlScore">
+                  <span class="hl-icon">📊</span>
+                  <div class="hl-info">
+                    <div class="hl-label">Avg Attention Score</div>
+                    <div class="hl-value" id="hlScoreVal">—</div>
+                  </div>
+                  <div class="hl-bar-wrap">
+                    <div class="hl-bar" id="hlScoreBar" style="width:0%"></div>
+                  </div>
+                </div>
+                <div class="highlight-row" id="hlTabSwitches">
+                  <span class="hl-icon">🔀</span>
+                  <div class="hl-info">
+                    <div class="hl-label">Tab Switches</div>
+                    <div class="hl-value" id="hlTabSwitchVal">0</div>
+                  </div>
+                </div>
+                <div class="highlight-row" id="hlDistractionDur">
+                  <span class="hl-icon">⏱️</span>
+                  <div class="hl-info">
+                    <div class="hl-label">Distraction Away Time</div>
+                    <div class="hl-value" id="hlDistractionDurVal">0s</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Export -->
+              <button class="btn btn-export" id="btnExportCSV" title="Download session report as CSV">
+                📅 Export CSV
+              </button>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
     </section>
 
     <!-- Right: Dashboard -->
@@ -266,142 +417,6 @@
         </div>
         <div class="today-sessions-list" id="todaySessionsList">
           <div class="today-empty-hint">No sessions completed today yet. Start a session to track focus.</div>
-        </div>
-      </div>
-
-      <!-- ── State Card ── -->
-      <div class="state-card" id="stateCard">
-        <div class="state-icon" id="stateIcon">👁️</div>
-        <div class="state-info">
-          <div class="state-label" id="stateLabel">Initializing…</div>
-          <div class="confidence-bar-wrap">
-            <div class="confidence-bar" id="confidenceBar"></div>
-          </div>
-          <div class="confidence-text" id="confidenceText">Confidence: —</div>
-        </div>
-      </div>
-
-      <!-- ── Metrics Row ── -->
-      <div class="metrics-grid">
-        <div class="metric-card" id="metricEar">
-          <div class="metric-value" id="earValue">—</div>
-          <div class="metric-label">Eye Aspect Ratio</div>
-          <div class="metric-bar-wrap"><div class="metric-bar" id="earBar"></div></div>
-        </div>
-        <div class="metric-card" id="metricBlink">
-          <div class="metric-value" id="blinkValue">—</div>
-          <div class="metric-label">Blinks / min</div>
-        </div>
-        <div class="metric-card" id="metricGaze">
-          <div class="metric-icon" id="gazeIcon">👁</div>
-          <div class="metric-value" id="gazeValue">—</div>
-          <div class="metric-label">Gaze Direction</div>
-        </div>
-      </div>
-
-      <!-- ── Head Pose ── -->
-      <div class="pose-card">
-        <div class="section-label">🔄 Head Pose</div>
-        <div class="pose-metrics">
-          <div class="pose-metric">
-            <div class="pose-label">Yaw</div>
-            <div class="pose-gauge" id="gaugeYaw">
-              <div class="gauge-track"><div class="gauge-fill" id="gaugeYawFill"></div></div>
-              <div class="pose-value" id="yawValue">0°</div>
-            </div>
-          </div>
-          <div class="pose-metric">
-            <div class="pose-label">Pitch</div>
-            <div class="pose-gauge" id="gaugePitch">
-              <div class="gauge-track"><div class="gauge-fill" id="gaugePitchFill"></div></div>
-              <div class="pose-value" id="pitchValue">0°</div>
-            </div>
-          </div>
-          <div class="pose-metric">
-            <div class="pose-label">Roll</div>
-            <div class="pose-gauge" id="gaugeRoll">
-              <div class="gauge-track"><div class="gauge-fill" id="gaugeRollFill"></div></div>
-              <div class="pose-value" id="rollValue">0°</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── Session Summary ── -->
-      <div class="session-card">
-        <div class="section-label">📊 Session Summary</div>
-        <div class="session-timer" id="sessionTimer">00:00:00</div>
-        <div class="donut-wrap">
-          <canvas id="donutChart" width="160" height="160"></canvas>
-          <div class="donut-center" id="donutCenter">
-            <div class="donut-pct" id="focusedPct">—</div>
-            <div class="donut-sub">Focused</div>
-          </div>
-        </div>
-        <div class="session-legend">
-          <div class="legend-item"><span class="legend-dot focused"></span>Focused <span id="lgFocused">—%</span></div>
-          <div class="legend-item"><span class="legend-dot distracted"></span>Distracted <span id="lgDistracted">—%</span></div>
-          <div class="legend-item"><span class="legend-dot drowsy"></span>Drowsy <span id="lgDrowsy">—%</span></div>
-        </div>
-
-        <!-- ── Performance Highlights ── -->
-        <div class="session-highlights">
-          <div class="highlight-row" id="hlFocusStreak">
-            <span class="hl-icon">🏆</span>
-            <div class="hl-info">
-              <div class="hl-label">Best Focus Streak</div>
-              <div class="hl-value" id="hlFocusStreakVal">—</div>
-            </div>
-          </div>
-          <div class="highlight-row" id="hlDistract">
-            <span class="hl-icon">📉</span>
-            <div class="hl-info">
-              <div class="hl-label">Longest Distraction</div>
-              <div class="hl-value" id="hlDistractVal">—</div>
-            </div>
-          </div>
-          <div class="highlight-row" id="hlScore">
-            <span class="hl-icon">📊</span>
-            <div class="hl-info">
-              <div class="hl-label">Avg Attention Score</div>
-              <div class="hl-value" id="hlScoreVal">—</div>
-            </div>
-            <div class="hl-bar-wrap">
-              <div class="hl-bar" id="hlScoreBar" style="width:0%"></div>
-            </div>
-          </div>
-          <div class="highlight-row" id="hlTabSwitches">
-            <span class="hl-icon">🔀</span>
-            <div class="hl-info">
-              <div class="hl-label">Tab Switches</div>
-              <div class="hl-value" id="hlTabSwitchVal">0</div>
-            </div>
-          </div>
-          <div class="highlight-row" id="hlDistractionDur">
-            <span class="hl-icon">⏱️</span>
-            <div class="hl-info">
-              <div class="hl-label">Distraction Away Time</div>
-              <div class="hl-value" id="hlDistractionDurVal">0s</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Export -->
-        <button class="btn btn-export" id="btnExportCSV" title="Download session report as CSV">
-          📅 Export CSV
-        </button>
-
-      </div>
-
-      <!-- ── Timeline Chart & Visual Stream (Panel 3) ── -->
-      <div class="timeline-card">
-        <div class="section-label">📈 Attention Timeline & Milestones</div>
-        <canvas id="timelineChart" height="80"></canvas>
-        <div class="visual-timeline-wrap">
-          <div class="visual-timeline-label">⚡ Real-Time Attention Transitions:</div>
-          <div class="visual-timeline-stream" id="visualTimelineStream">
-            <div class="timeline-empty-hint">Start a study session to track milestones.</div>
-          </div>
         </div>
       </div>
 
