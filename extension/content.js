@@ -12,15 +12,15 @@
   const BACKEND_URL = "http://localhost:5050";
 
   // State
-  let activeSession   = null;
-  let isMonitoring    = false;
+  let activeSession = null;
+  let isMonitoring = false;
   let mutationObserver = null;
-  let titleObserver   = null;
-  let currentTitle    = document.title;
-  let currentUrlPath  = window.location.pathname;
+  let titleObserver = null;
+  let currentTitle = document.title;
+  let currentUrlPath = window.location.pathname;
   let lastInteractionTime = 0;
-  const offlineQueue  = [];
-  const boundVideos   = new WeakSet();
+  const offlineQueue = [];
+  const boundVideos = new WeakSet();
 
   /**
    * Safe domain and title sanitizer (privacy protection).
@@ -305,24 +305,6 @@
       }
     });
   }
-
-  // Listen for messages from background.js and forward to webpage
-  if (chrome && chrome.runtime && chrome.runtime.onMessage) {
-    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-      if (msg && msg.type === "ATTENTION_EVENT_LOGGED") {
-        window.dispatchEvent(new CustomEvent("attention:extension_event", { detail: msg }));
-        window.dispatchEvent(new CustomEvent("attention:tab_switch", { detail: msg }));
-      }
-      sendResponse({ received: true });
-      return true;
-    });
-  }
-
-  // Mark webpage so AttentionAI dashboard knows extension is installed
-  try {
-    document.documentElement.setAttribute("data-attention-extension", "connected");
-    window.__ATTENTION_AI_EXTENSION_INSTALLED__ = true;
-  } catch (_) {}
 
   // Periodic session health-check
   setInterval(checkSessionStatus, 8000);

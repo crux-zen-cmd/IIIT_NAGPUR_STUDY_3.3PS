@@ -7,81 +7,81 @@
 "use strict";
 
 // ── DOM refs ────────────────────────────────────────────────────
-const liveDot        = document.getElementById("liveDot");
-const liveLabel      = document.getElementById("liveLabel");
-const fpsBadge       = document.getElementById("fpsBadge");
-const stateCard      = document.getElementById("stateCard");
-const stateIcon      = document.getElementById("stateIcon");
-const stateLabel     = document.getElementById("stateLabel");
-const confidenceBar  = document.getElementById("confidenceBar");
+const liveDot = document.getElementById("liveDot");
+const liveLabel = document.getElementById("liveLabel");
+const fpsBadge = document.getElementById("fpsBadge");
+const stateCard = document.getElementById("stateCard");
+const stateIcon = document.getElementById("stateIcon");
+const stateLabel = document.getElementById("stateLabel");
+const confidenceBar = document.getElementById("confidenceBar");
 const confidenceText = document.getElementById("confidenceText");
-const earValue       = document.getElementById("earValue");
-const earBar         = document.getElementById("earBar");
-const blinkValue     = document.getElementById("blinkValue");
-const gazeIcon       = document.getElementById("gazeIcon");
-const gazeValue      = document.getElementById("gazeValue");
-const yawValue       = document.getElementById("yawValue");
-const pitchValue     = document.getElementById("pitchValue");
-const rollValue      = document.getElementById("rollValue");
-const gaugeYawFill   = document.getElementById("gaugeYawFill");
+const earValue = document.getElementById("earValue");
+const earBar = document.getElementById("earBar");
+const blinkValue = document.getElementById("blinkValue");
+const gazeIcon = document.getElementById("gazeIcon");
+const gazeValue = document.getElementById("gazeValue");
+const yawValue = document.getElementById("yawValue");
+const pitchValue = document.getElementById("pitchValue");
+const rollValue = document.getElementById("rollValue");
+const gaugeYawFill = document.getElementById("gaugeYawFill");
 const gaugePitchFill = document.getElementById("gaugePitchFill");
-const gaugeRollFill  = document.getElementById("gaugeRollFill");
-const sessionTimer   = document.getElementById("sessionTimer");
-const focusedPct     = document.getElementById("focusedPct");
-const lgFocused      = document.getElementById("lgFocused");
-const lgDistracted   = document.getElementById("lgDistracted");
-const lgDrowsy       = document.getElementById("lgDrowsy");
-const donutCanvas    = document.getElementById("donutChart");
+const gaugeRollFill = document.getElementById("gaugeRollFill");
+const sessionTimer = document.getElementById("sessionTimer");
+const focusedPct = document.getElementById("focusedPct");
+const lgFocused = document.getElementById("lgFocused");
+const lgDistracted = document.getElementById("lgDistracted");
+const lgDrowsy = document.getElementById("lgDrowsy");
+const donutCanvas = document.getElementById("donutChart");
 const timelineCanvas = document.getElementById("timelineChart");
-const videoCanvas    = document.getElementById("videoCanvas");   // ← canvas feed
-const btnReset       = document.getElementById("btnReset");
-const toast          = document.getElementById("toast");
-const noFaceOverlay  = document.getElementById("noFaceOverlay");
-const videoWrapper   = document.getElementById("videoWrapper");
+const videoCanvas = document.getElementById("videoCanvas");   // ← canvas feed
+const btnReset = document.getElementById("btnReset");
+const toast = document.getElementById("toast");
+const noFaceOverlay = document.getElementById("noFaceOverlay");
+const videoWrapper = document.getElementById("videoWrapper");
 
 // Camera mode controls
-const btnSourceLaptop        = document.getElementById("btnSourceLaptop");
-const btnSourceMobile        = document.getElementById("btnSourceMobile");
-const cameraSourceBadge      = document.getElementById("cameraSourceBadge");
-const deviceCameraVideo      = document.getElementById("deviceCameraVideo");
-const mobileOffscreenCanvas  = document.getElementById("mobileOffscreenCanvas");
-const camIndicatorDot        = document.getElementById("camIndicatorDot");
-const camIndicatorText       = document.getElementById("camIndicatorText");
+const btnSourceLaptop = document.getElementById("btnSourceLaptop");
+const btnSourceMobile = document.getElementById("btnSourceMobile");
+const cameraSourceBadge = document.getElementById("cameraSourceBadge");
+const deviceCameraVideo = document.getElementById("deviceCameraVideo");
+const mobileOffscreenCanvas = document.getElementById("mobileOffscreenCanvas");
+const camIndicatorDot = document.getElementById("camIndicatorDot");
+const camIndicatorText = document.getElementById("camIndicatorText");
 
-let activeCameraMode         = "laptop"; // 'laptop' | 'mobile'
-let deviceMediaStream        = null;
-let mobileUploadTimer        = null;
-let isUploadingMobileFrame   = false;
-const isMobileDevice         = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
+let activeCameraMode = "laptop"; // 'laptop' | 'mobile'
+let deviceMediaStream = null;
+let mobileUploadTimer = null;
+let isUploadingMobileFrame = false;
+const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
 
-const donutCtx    = donutCanvas.getContext("2d");
+const donutCtx = donutCanvas.getContext("2d");
 const timelineCtx = timelineCanvas.getContext("2d");
-const videoCtx    = videoCanvas.getContext("2d");
+const videoCtx = videoCanvas.getContext("2d");
 
 // ── State ───────────────────────────────────────────────────────
 const CONFIG = {
-  POLL_STATUS_MS:  300,
+  POLL_STATUS_MS: 300,
   POLL_SESSION_MS: 2000,
   POLL_TIMELINE_MS: 2500,
 };
 
 const STATE_META = {
-  "Focused":    { icon: "🎯", cls: "focused",    color: "#22d67a" },
+  "Focused": { icon: "🎯", cls: "focused", color: "#22d67a" },
   "Distracted": { icon: "👀", cls: "distracted", color: "#f59e0b" },
-  "Drowsy":     { icon: "😴", cls: "drowsy",     color: "#ef4444" },
-  "No Face":    { icon: "❓", cls: "",            color: "#8899bb" },
+  "Drowsy": { icon: "😴", cls: "drowsy", color: "#ef4444" },
+  "No Face": { icon: "❓", cls: "", color: "#8899bb" },
 };
 
 const GAZE_ICONS = {
-  center:  "👁️", left: "👈", right: "👉",
+  center: "👁️", left: "👈", right: "👉",
   up: "⬆️", down: "⬇️", unknown: "❓",
 };
 
 let sessionStartTime = Date.now();
-let timerInterval    = null;
-let isConnected      = false;
-let donutData        = { focused: 0, distracted: 0, drowsy: 0 };
-let timelineData     = [];
+let timerInterval = null;
+let isConnected = false;
+let donutData = { focused: 0, distracted: 0, drowsy: 0 };
+let timelineData = [];
 
 // ── Helpers ─────────────────────────────────────────────────────
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
@@ -180,44 +180,44 @@ function applyStatus(data) {
   gazeValue.textContent = gDir.charAt(0).toUpperCase() + gDir.slice(1);
 
   // Head pose
-  yawValue.textContent   = `${data.yaw}°`;
+  yawValue.textContent = `${data.yaw}°`;
   pitchValue.textContent = `${data.pitch}°`;
-  rollValue.textContent  = `${data.roll}°`;
+  rollValue.textContent = `${data.roll}°`;
 
-  const yPct   = angleToBarPercent(data.yaw);
-  const piPct  = angleToBarPercent(data.pitch);
-  const roPct  = angleToBarPercent(data.roll);
+  const yPct = angleToBarPercent(data.yaw);
+  const piPct = angleToBarPercent(data.pitch);
+  const roPct = angleToBarPercent(data.roll);
 
-  setGauge(gaugeYawFill,   yPct);
+  setGauge(gaugeYawFill, yPct);
   setGauge(gaugePitchFill, piPct);
-  setGauge(gaugeRollFill,  roPct);
+  setGauge(gaugeRollFill, roPct);
 }
 
 function setGauge(el, pct) {
   // Center at 50% → display as bar extending left or right from center
   const half = Math.abs(pct - 50);
   if (pct >= 50) {
-    el.style.left  = "50%";
+    el.style.left = "50%";
     el.style.width = `${half}%`;
   } else {
-    el.style.left  = `${pct}%`;
+    el.style.left = `${pct}%`;
     el.style.width = `${half}%`;
   }
 }
 
 // ── Donut Chart ──────────────────────────────────────────────────
 function drawDonut(f, d, dr) {
-  const cx = donutCanvas.width  / 2;
+  const cx = donutCanvas.width / 2;
   const cy = donutCanvas.height / 2;
-  const R  = 68;
-  const r  = 44;
+  const R = 68;
+  const r = 44;
   const total = f + d + dr || 1;
 
   donutCtx.clearRect(0, 0, donutCanvas.width, donutCanvas.height);
 
   const slices = [
-    { value: f,  color: "#22d67a" },
-    { value: d,  color: "#f59e0b" },
+    { value: f, color: "#22d67a" },
+    { value: d, color: "#f59e0b" },
     { value: dr, color: "#ef4444" },
   ];
 
@@ -248,32 +248,32 @@ function drawDonut(f, d, dr) {
 }
 
 function applySession(data) {
-  const f  = data.focused_pct    || 0;
-  const d  = data.distracted_pct || 0;
-  const dr = data.drowsy_pct     || 0;
+  const f = data.focused_pct || 0;
+  const d = data.distracted_pct || 0;
+  const dr = data.drowsy_pct || 0;
 
   donutData = { focused: f, distracted: d, drowsy: dr };
   drawDonut(f, d, dr);
 
-  focusedPct.textContent   = `${f}%`;
-  lgFocused.textContent    = `${f}%`;
+  focusedPct.textContent = `${f}%`;
+  lgFocused.textContent = `${f}%`;
   lgDistracted.textContent = `${d}%`;
-  lgDrowsy.textContent     = `${dr}%`;
+  lgDrowsy.textContent = `${dr}%`;
 
   // ── Performance Highlights ─────────────────────────────────────
   function fmtSec(s) {
     if (!s || s < 1) return "—";
-    const m   = Math.floor(s / 60);
+    const m = Math.floor(s / 60);
     const sec = Math.round(s % 60);
     return m > 0 ? `${m}m ${sec}s` : `${sec}s`;
   }
 
-  const streak  = data.best_focus_streak_sec || 0;
-  const distLen = data.longest_distract_sec  || 0;
-  const score   = (data.attention_score !== undefined) ? data.attention_score : null;
+  const streak = data.best_focus_streak_sec || 0;
+  const distLen = data.longest_distract_sec || 0;
+  const score = (data.attention_score !== undefined) ? data.attention_score : null;
 
   document.getElementById("hlFocusStreakVal").textContent = fmtSec(streak);
-  document.getElementById("hlDistractVal").textContent    = fmtSec(distLen);
+  document.getElementById("hlDistractVal").textContent = fmtSec(distLen);
 
   if (score !== null) {
     document.getElementById("hlScoreVal").textContent = `${score} / 100`;
@@ -286,7 +286,7 @@ const STATE_Y = { "Focused": 0.1, "Distracted": 0.5, "Drowsy": 0.9, "No Face": 0
 const STATE_C = { "Focused": "#22d67a", "Distracted": "#f59e0b", "Drowsy": "#ef4444", "No Face": "#8899bb" };
 
 function drawTimeline(records) {
-  const cw = timelineCanvas.offsetWidth  || timelineCanvas.width;
+  const cw = timelineCanvas.offsetWidth || timelineCanvas.width;
   const ch = timelineCanvas.height;
   timelineCanvas.width = cw;
 
@@ -374,7 +374,7 @@ async function pollSession() {
   try {
     const r = await fetch("/api/session_summary");
     if (r.ok) applySession(await r.json());
-  } catch (_) {}
+  } catch (_) { }
 }
 
 async function pollTimeline() {
@@ -384,7 +384,7 @@ async function pollTimeline() {
       timelineData = await r.json();
       drawTimeline(timelineData);
     }
-  } catch (_) {}
+  } catch (_) { }
 }
 
 // ── Reset Session ─────────────────────────────────────────────────
@@ -409,12 +409,12 @@ if (btnExportCSV) {
     try {
       const resp = await fetch("/api/export_csv");
       if (!resp.ok) throw new Error("export failed");
-      const blob     = await resp.blob();
-      const url      = URL.createObjectURL(blob);
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
       const filename = (resp.headers.get("Content-Disposition") || "attentionai.csv")
         .split("filename=")[1] || "attentionai_session.csv";
       const a = document.createElement("a");
-      a.href     = url;
+      a.href = url;
       a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
@@ -429,42 +429,42 @@ if (btnExportCSV) {
 }
 
 // ── Phase 1: User Profile & Study Session Controller ───────────────
-let currentUser          = null;
+let currentUser = null;
 let currentActiveSession = null;
-let studyTimerInterval   = null;
+let studyTimerInterval = null;
 
 // User Profile DOM
-const userDisplayName        = document.getElementById("userDisplayName");
-const userDisplayId          = document.getElementById("userDisplayId");
-const userProfileBadge       = document.getElementById("userProfileBadge");
-const btnToggleProfileModal  = document.getElementById("btnToggleProfileModal");
-const profileModal           = document.getElementById("profileModal");
-const btnCloseProfileModal   = document.getElementById("btnCloseProfileModal");
-const modalUserId            = document.getElementById("modalUserId");
-const btnCopyUserId          = document.getElementById("btnCopyUserId");
-const modalUserName          = document.getElementById("modalUserName");
-const modalUserEmail         = document.getElementById("modalUserEmail");
-const btnSaveProfile         = document.getElementById("btnSaveProfile");
-const btnCreateNewUser       = document.getElementById("btnCreateNewUser");
+const userDisplayName = document.getElementById("userDisplayName");
+const userDisplayId = document.getElementById("userDisplayId");
+const userProfileBadge = document.getElementById("userProfileBadge");
+const btnToggleProfileModal = document.getElementById("btnToggleProfileModal");
+const profileModal = document.getElementById("profileModal");
+const btnCloseProfileModal = document.getElementById("btnCloseProfileModal");
+const modalUserId = document.getElementById("modalUserId");
+const btnCopyUserId = document.getElementById("btnCopyUserId");
+const modalUserName = document.getElementById("modalUserName");
+const modalUserEmail = document.getElementById("modalUserEmail");
+const btnSaveProfile = document.getElementById("btnSaveProfile");
+const btnCreateNewUser = document.getElementById("btnCreateNewUser");
 
 // Study Session DOM
-const sessionInactiveGroup   = document.getElementById("sessionInactiveGroup");
-const inputCourseName        = document.getElementById("inputCourseName");
-const selectPlatform         = document.getElementById("selectPlatform");
-const inputCourseUrl         = document.getElementById("inputCourseUrl");
-const btnStartSession        = document.getElementById("btnStartSession");
+const sessionInactiveGroup = document.getElementById("sessionInactiveGroup");
+const inputCourseName = document.getElementById("inputCourseName");
+const selectPlatform = document.getElementById("selectPlatform");
+const inputCourseUrl = document.getElementById("inputCourseUrl");
+const btnStartSession = document.getElementById("btnStartSession");
 
-const sessionActiveGroup     = document.getElementById("sessionActiveGroup");
-const activeSessionIdTag     = document.getElementById("activeSessionIdTag");
-const activeCourseTitle      = document.getElementById("activeCourseTitle");
-const activePlatformPill     = document.getElementById("activePlatformPill");
-const activeSessionTimer     = document.getElementById("activeSessionTimer");
-const btnEndSession          = document.getElementById("btnEndSession");
+const sessionActiveGroup = document.getElementById("sessionActiveGroup");
+const activeSessionIdTag = document.getElementById("activeSessionIdTag");
+const activeCourseTitle = document.getElementById("activeCourseTitle");
+const activePlatformPill = document.getElementById("activePlatformPill");
+const activeSessionTimer = document.getElementById("activeSessionTimer");
+const btnEndSession = document.getElementById("btnEndSession");
 
-const lastSessionNotice      = document.getElementById("lastSessionNotice");
-const lastCourseName         = document.getElementById("lastCourseName");
-const lastPlatform           = document.getElementById("lastPlatform");
-const lastDuration           = document.getElementById("lastDuration");
+const lastSessionNotice = document.getElementById("lastSessionNotice");
+const lastCourseName = document.getElementById("lastCourseName");
+const lastPlatform = document.getElementById("lastPlatform");
+const lastDuration = document.getElementById("lastDuration");
 
 function formatSeconds(totalSec) {
   const s = Math.max(0, Math.floor(totalSec));
@@ -511,28 +511,28 @@ function startStudySessionTimer(startTimeIso) {
   studyTimerInterval = setInterval(update, 1000);
 }
 
-const sessionEventsBox   = document.getElementById("sessionEventsBox");
-const eventsCountBadge   = document.getElementById("eventsCountBadge");
-const eventsScrollList   = document.getElementById("eventsScrollList");
-const eventsEmptyHint    = document.getElementById("eventsEmptyHint");
-const btnTestTabSwitch   = document.getElementById("btnTestTabSwitch");
-const btnTestVideoPause  = document.getElementById("btnTestVideoPause");
-const btnTestFocusLost   = document.getElementById("btnTestFocusLost");
+const sessionEventsBox = document.getElementById("sessionEventsBox");
+const eventsCountBadge = document.getElementById("eventsCountBadge");
+const eventsScrollList = document.getElementById("eventsScrollList");
+const eventsEmptyHint = document.getElementById("eventsEmptyHint");
+const btnTestTabSwitch = document.getElementById("btnTestTabSwitch");
+const btnTestVideoPause = document.getElementById("btnTestVideoPause");
+const btnTestFocusLost = document.getElementById("btnTestFocusLost");
 
 const EVENT_ICONS = {
-  TAB_SWITCH:         "🔀",
-  PAGE_HIDDEN:        "🙈",
-  PAGE_VISIBLE:       "👀",
-  DROWSINESS:         "😴",
+  TAB_SWITCH: "🔀",
+  PAGE_HIDDEN: "🙈",
+  PAGE_VISIBLE: "👀",
+  DROWSINESS: "😴",
   DROWSINESS_STARTED: "😴",
-  DROWSINESS_ENDED:   "⚡",
-  FOCUS_LOST:         "⚠️",
-  FOCUS_REGAINED:     "🎯",
-  VIDEO_STARTED:      "▶",
-  VIDEO_PAUSED:       "⏸",
-  VIDEO_RESUMED:      "▶",
-  VIDEO_COMPLETED:    "🏁",
-  PAGE_CHANGED:       "📄",
+  DROWSINESS_ENDED: "⚡",
+  FOCUS_LOST: "⚠️",
+  FOCUS_REGAINED: "🎯",
+  VIDEO_STARTED: "▶",
+  VIDEO_PAUSED: "⏸",
+  VIDEO_RESUMED: "▶",
+  VIDEO_COMPLETED: "🏁",
+  PAGE_CHANGED: "📄",
   CONTENT_INTERACTED: "👆",
 };
 
@@ -776,7 +776,7 @@ function renderActiveSession(session) {
   sessionActiveGroup.classList.remove("hidden");
 
   activeSessionIdTag.textContent = session.session_id;
-  activeCourseTitle.textContent  = session.course_name;
+  activeCourseTitle.textContent = session.course_name;
   activePlatformPill.textContent = session.platform;
 
   startStudySessionTimer(session.start_time);
@@ -802,13 +802,13 @@ async function loadLastCompletedSession() {
     if (completed.length > 0) {
       const last = completed[0];
       lastCourseName.textContent = last.course_name;
-      lastPlatform.textContent   = last.platform;
-      lastDuration.textContent   = `⏱ ${formatDurationHuman(last.duration || 0)}`;
+      lastPlatform.textContent = last.platform;
+      lastDuration.textContent = `⏱ ${formatDurationHuman(last.duration || 0)}`;
       lastSessionNotice.classList.remove("hidden");
     } else {
       lastSessionNotice.classList.add("hidden");
     }
-  } catch (_) {}
+  } catch (_) { }
 }
 
 async function checkActiveSession() {
@@ -854,10 +854,10 @@ async function initUserProfile() {
 function applyUserToUI(user) {
   if (!user) return;
   userDisplayName.textContent = user.name;
-  userDisplayId.textContent   = user.user_id;
-  modalUserId.textContent     = user.user_id;
-  modalUserName.value         = user.name;
-  modalUserEmail.value        = user.email;
+  userDisplayId.textContent = user.user_id;
+  modalUserId.textContent = user.user_id;
+  modalUserName.value = user.name;
+  modalUserEmail.value = user.email;
 }
 
 // ── Profile Modal Events ──────────────────────────────────────────
@@ -877,7 +877,6 @@ profileModal.addEventListener("click", (e) => {
 });
 
 // ── Mobile Expo App Modal ───────────────────────────────────────
-// ── Mobile Expo App Modal ───────────────────────────────────────
 const btnExpoModal = document.getElementById("btnExpoModal");
 const expoModalBackdrop = document.getElementById("expoModalBackdrop");
 const btnCloseExpoModal = document.getElementById("btnCloseExpoModal");
@@ -892,85 +891,6 @@ if (expoModalBackdrop) {
     if (e.target === expoModalBackdrop) expoModalBackdrop.classList.add("hidden");
   });
 }
-
-// ── Chrome Extension Tab Switch Modal & Bridge ─────────────────────
-const btnExtensionModal = document.getElementById("btnExtensionModal");
-const extensionModalBackdrop = document.getElementById("extensionModalBackdrop");
-const btnCloseExtensionModal = document.getElementById("btnCloseExtensionModal");
-const btnDoneExtensionModal = document.getElementById("btnDoneExtensionModal");
-const btnCopyExtPath = document.getElementById("btnCopyExtPath");
-const btnTestExtensionSwitch = document.getElementById("btnTestExtensionSwitch");
-
-if (btnExtensionModal && extensionModalBackdrop) {
-  btnExtensionModal.addEventListener("click", () => {
-    extensionModalBackdrop.classList.remove("hidden");
-    // Check if extension is active in window
-    const badge = document.getElementById("extStatusBadge");
-    const text = document.getElementById("extStatusText");
-    if (window.__ATTENTION_AI_EXTENSION_INSTALLED__ || document.documentElement.getAttribute("data-attention-extension")) {
-      if (badge) { badge.textContent = "Active"; badge.style.background = "#dcfce7"; badge.style.color = "#16a34a"; }
-      if (text) text.textContent = "Connected & Monitoring Tab Switches";
-    }
-  });
-}
-if (btnCloseExtensionModal && extensionModalBackdrop) {
-  btnCloseExtensionModal.addEventListener("click", () => extensionModalBackdrop.classList.add("hidden"));
-}
-if (btnDoneExtensionModal && extensionModalBackdrop) {
-  btnDoneExtensionModal.addEventListener("click", () => extensionModalBackdrop.classList.add("hidden"));
-}
-if (extensionModalBackdrop) {
-  extensionModalBackdrop.addEventListener("click", (e) => {
-    if (e.target === extensionModalBackdrop) extensionModalBackdrop.classList.add("hidden");
-  });
-}
-if (btnCopyExtPath) {
-  btnCopyExtPath.addEventListener("click", async () => {
-    const p = document.getElementById("extFolderPath");
-    const val = p ? p.textContent.trim() : "e:\\IIIT NAG\\extension";
-    try {
-      await navigator.clipboard.writeText(val);
-      showToast("📋 Copied extension path to clipboard!");
-    } catch (_) {
-      showToast(`Extension path: ${val}`);
-    }
-  });
-}
-if (btnTestExtensionSwitch) {
-  btnTestExtensionSwitch.addEventListener("click", async () => {
-    if (!currentActiveSession) {
-      showToast("⚠️ Start a study session first to log tab switches!");
-      return;
-    }
-    try {
-      if (typeof window.logSessionEvent === "function") {
-        await window.logSessionEvent(currentActiveSession.session_id, "TAB_SWITCH", {
-          previousTab: "Coursera · Machine Learning",
-          newTab: "YouTube - Recommended Videos",
-          previousUrl: "coursera.org",
-          newUrl: "youtube.com",
-          distraction: true,
-          source: "chrome_extension_tabs",
-        });
-        showToast("🔀 Logged TAB_SWITCH from Chrome Extension!");
-        loadSessionEvents(currentActiveSession.session_id);
-      }
-    } catch (err) {
-      showToast(`❌ ${err.message}`);
-    }
-  });
-}
-
-// Listen for tab switch events dispatched from content.js bridge
-window.addEventListener("attention:tab_switch", (e) => {
-  const detail = e.detail || {};
-  const meta = detail.metadata || {};
-  const site = meta.newTab || meta.newUrl || "Off-task tab";
-  showToast(`🔀 Tab Switch detected: ${site}`);
-  if (currentActiveSession) {
-    loadSessionEvents(currentActiveSession.session_id);
-  }
-});
 
 btnCopyUserId.addEventListener("click", async () => {
   if (currentUser) {
@@ -1037,8 +957,8 @@ btnStartSession.addEventListener("click", async () => {
     return;
   }
   const courseName = inputCourseName.value.trim() || "General Study";
-  const platform   = selectPlatform.value || "Coursera";
-  const courseUrl  = inputCourseUrl.value.trim();
+  const platform = selectPlatform.value || "Coursera";
+  const courseUrl = inputCourseUrl.value.trim();
 
   const isMobileSession = isMobileDevice || activeCameraMode === "mobile";
 
@@ -1046,7 +966,7 @@ btnStartSession.addEventListener("click", async () => {
   if (isMobileSession && (!deviceMediaStream || activeCameraMode !== "mobile")) {
     try {
       await switchCameraMode("mobile", false);
-    } catch (_) {}
+    } catch (_) { }
   }
 
   try {
@@ -1143,8 +1063,8 @@ btnEndSession.addEventListener("click", async () => {
 document.querySelectorAll(".btn-preset").forEach(btn => {
   btn.addEventListener("click", () => {
     if (inputCourseName) inputCourseName.value = btn.dataset.course || "";
-    if (selectPlatform)  selectPlatform.value  = btn.dataset.platform || "Coursera";
-    if (inputCourseUrl)  inputCourseUrl.value  = btn.dataset.url || "";
+    if (selectPlatform) selectPlatform.value = btn.dataset.platform || "Coursera";
+    if (inputCourseUrl) inputCourseUrl.value = btn.dataset.url || "";
     showToast(`📚 Selected: ${btn.dataset.course}`);
   });
 });
@@ -1258,7 +1178,7 @@ async function switchCameraMode(mode, showNotice = true) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ source: "mobile" }),
-      }).catch(() => {});
+      }).catch(() => { });
 
       if (mobileUploadTimer) clearInterval(mobileUploadTimer);
       mobileUploadTimer = setInterval(uploadDeviceCameraFrame, 130);
@@ -1299,7 +1219,7 @@ async function switchCameraMode(mode, showNotice = true) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ source: "laptop" }),
-    }).catch(() => {});
+    }).catch(() => { });
 
     if (showNotice) {
       showToast("💻 Switched to Laptop Webcam.");
@@ -1372,7 +1292,7 @@ async function framePollLoop() {
       if (window.createImageBitmap) {
         const bmp = await createImageBitmap(blob);
         if (videoCanvas.width !== bmp.width || videoCanvas.height !== bmp.height) {
-          videoCanvas.width  = bmp.width;
+          videoCanvas.width = bmp.width;
           videoCanvas.height = bmp.height;
         }
         videoCtx.drawImage(bmp, 0, 0);
@@ -1383,7 +1303,7 @@ async function framePollLoop() {
           const img = new Image();
           img.onload = () => {
             if (videoCanvas.width !== img.width || videoCanvas.height !== img.height) {
-              videoCanvas.width  = img.width;
+              videoCanvas.width = img.width;
               videoCanvas.height = img.height;
             }
             videoCtx.drawImage(img, 0, 0);
@@ -1418,8 +1338,8 @@ drawDonut(0, 0, 0);
 drawTimeline([]);
 initUserProfile(); // Phase 1: Initialize User Profile & Session state
 
-setInterval(pollStatus,   CONFIG.POLL_STATUS_MS);
-setInterval(pollSession,  CONFIG.POLL_SESSION_MS);
+setInterval(pollStatus, CONFIG.POLL_STATUS_MS);
+setInterval(pollSession, CONFIG.POLL_SESSION_MS);
 setInterval(pollTimeline, CONFIG.POLL_TIMELINE_MS);
 
 pollStatus();
@@ -1437,11 +1357,11 @@ for (let i = 0; i < 18; i++) {
   const size = Math.random() * 3 + 1;
   Object.assign(dot.style, {
     position: "absolute",
-    width:  `${size}px`,
+    width: `${size}px`,
     height: `${size}px`,
     borderRadius: "50%",
     background: `hsla(${190 + Math.random() * 80}, 80%, 70%, ${0.1 + Math.random() * 0.2})`,
-    top:  `${Math.random() * 100}%`,
+    top: `${Math.random() * 100}%`,
     left: `${Math.random() * 100}%`,
     animation: `drift${Math.random() > 0.5 ? "1" : "2"} ${10 + Math.random() * 15}s ease-in-out infinite alternate`,
     animationDelay: `${Math.random() * 5}s`,

@@ -1,3 +1,7 @@
+"""
+Attention logic package: State classification, Bayesian Digital Twin, and counterfactual simulation.
+"""
+
 from .attention_state_engine import AttentionStateEngine
 from .classifier import AttentionClassifier
 from .cv_session_tracker import SessionCVTracker

@@ -1,3 +1,7 @@
+"""
+Database package for AttentionAI SQLite persistence and telemetry logs.
+"""
+
 from .database import (
     init_db,
     get_connection,
