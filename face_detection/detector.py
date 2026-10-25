@@ -60,6 +60,23 @@ class FaceDetector:
         )
         self._landmarker = mp_vision.FaceLandmarker.create_from_options(opts)
 
+        # ── Primary user spatial tracking & continuity lock ───────────
+        self._tracked_centroid = None   # (cx, cy)
+        self._tracked_bbox     = None   # (x0, y0, x1, y1)
+        self._tracked_area     = 1.0
+        self._frames_tracked   = 0
+        self._lost_frames      = 0
+        self._primary_face_idx = 0
+
+    def reset_tracking(self):
+        """Reset primary user tracking lock (e.g. on new session or manual reset)."""
+        self._tracked_centroid = None
+        self._tracked_bbox     = None
+        self._tracked_area     = 1.0
+        self._frames_tracked   = 0
+        self._lost_frames      = 0
+        self._primary_face_idx = 0
+
     def process(self, frame_bgr: np.ndarray):
         """
         Run face landmarking on a BGR frame.
@@ -69,43 +86,130 @@ class FaceDetector:
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
         return self._landmarker.detect(mp_image)
 
+    @staticmethod
+    def _compute_iou(boxA, boxB):
+        if boxA is None or boxB is None:
+            return 0.0
+        xA = max(boxA[0], boxB[0])
+        yA = max(boxA[1], boxB[1])
+        xB = min(boxA[2], boxB[2])
+        yB = min(boxA[3], boxB[3])
+        interW = max(0.0, xB - xA)
+        interH = max(0.0, yB - yA)
+        interArea = interW * interH
+        boxAArea = max(1.0, (boxA[2] - boxA[0]) * (boxA[3] - boxA[1]))
+        boxBArea = max(1.0, (boxB[2] - boxB[0]) * (boxB[3] - boxB[1]))
+        iou = interArea / float(boxAArea + boxBArea - interArea)
+        return max(0.0, min(1.0, iou))
+
     def get_landmarks(self, result, frame_shape) -> "np.ndarray | None":
         """
-        Returns landmarks for the PRIMARY face (largest = closest to camera).
-        Returns shape (N, 3) or None.
+        Returns landmarks for the PRIMARY user.
+        Locks onto the primary user using spatial continuity and centrality,
+        preventing bystanders or secondary persons from hijacking tracking.
         """
         if not result.face_landmarks:
+            self._lost_frames += 1
+            if self._lost_frames > 40:
+                self.reset_tracking()
             return None
 
         h = int(frame_shape[0])
         w = int(frame_shape[1])
+        diag = float(np.hypot(w, h))
 
-        # Build landmarks for all detected faces
-        all_faces = []
-        for face_lms in result.face_landmarks:
+        candidates = []
+        for idx, face_lms in enumerate(result.face_landmarks):
             coords = np.array(
                 [[lm.x * w, lm.y * h, lm.z * w] for lm in face_lms],
                 dtype=np.float32,
             )
-            all_faces.append(coords)
+            x0 = float(np.min(coords[:, 0]))
+            x1 = float(np.max(coords[:, 0]))
+            y0 = float(np.min(coords[:, 1]))
+            y1 = float(np.max(coords[:, 1]))
+            cx = (x0 + x1) / 2.0
+            cy = (y0 + y1) / 2.0
+            area = max(1.0, (x1 - x0) * (y1 - y0))
 
-        if len(all_faces) == 1:
-            return all_faces[0]
+            # Centrality: primary student sits in front of screen center
+            norm_cx_dist = abs(cx - (w / 2.0)) / (w / 2.0)
+            norm_cy_dist = abs(cy - (h / 2.0)) / (h / 2.0)
+            center_score = max(0.0, 1.0 - (0.75 * norm_cx_dist + 0.25 * norm_cy_dist))
+            norm_size    = min(1.0, area / max(1.0, 0.22 * w * h))
 
-        # Select the face with the largest bounding-box area (= primary user)
-        def _bbox_area(lms):
-            x0 = float(np.min(lms[:, 0]))
-            x1 = float(np.max(lms[:, 0]))
-            y0 = float(np.min(lms[:, 1]))
-            y1 = float(np.max(lms[:, 1]))
-            return (x1 - x0) * (y1 - y0)
+            # Continuity match against currently locked primary user
+            continuity_score = 0.0
+            proximity_score  = 0.0
+            if self._tracked_centroid is not None and self._lost_frames < 30:
+                dist = float(np.hypot(cx - self._tracked_centroid[0], cy - self._tracked_centroid[1]))
+                proximity_score = max(0.0, 1.0 - (dist / (0.42 * diag)))
+                iou_score = self._compute_iou((x0, y0, x1, y1), self._tracked_bbox)
+                area_ratio = min(area, self._tracked_area) / max(area, self._tracked_area, 1.0)
+                continuity_score = 0.50 * proximity_score + 0.35 * iou_score + 0.15 * area_ratio
 
-        return max(all_faces, key=_bbox_area)
+            candidates.append({
+                "idx": idx,
+                "coords": coords,
+                "bbox": (x0, y0, x1, y1),
+                "centroid": (cx, cy),
+                "area": area,
+                "center_score": center_score,
+                "norm_size": norm_size,
+                "continuity_score": continuity_score,
+                "proximity_score": proximity_score,
+            })
 
-    def get_secondary_face_bboxes(self, result, frame_shape, primary_landmarks):
+        if len(candidates) == 1:
+            best = candidates[0]
+        else:
+            # When multiple people appear in camera:
+            if self._frames_tracked >= 3 and self._lost_frames < 25:
+                # User is already established & locked in!
+                # Prioritize continuity so bystander walking in cannot steal focus.
+                def _tracking_score(c):
+                    return 0.85 * c["continuity_score"] + 0.15 * c["center_score"]
+
+                best = max(candidates, key=_tracking_score)
+                # Fallback if primary user actually walked away
+                if best["continuity_score"] < 0.15 and best["proximity_score"] < 0.20:
+                    best = max(candidates, key=lambda c: 0.70 * c["center_score"] + 0.30 * c["norm_size"])
+            else:
+                # Initial acquisition: pick the person sitting centered in front of screen
+                best = max(candidates, key=lambda c: 0.65 * c["center_score"] + 0.35 * c["norm_size"])
+
+        # Update primary user tracking lock with exponential moving average
+        self._primary_face_idx = best["idx"]
+        best_cx, best_cy = best["centroid"]
+        best_x0, best_y0, best_x1, best_y1 = best["bbox"]
+        best_area = best["area"]
+
+        if self._tracked_centroid is None:
+            self._tracked_centroid = (best_cx, best_cy)
+            self._tracked_bbox     = (best_x0, best_y0, best_x1, best_y1)
+            self._tracked_area     = best_area
+        else:
+            alpha = 0.75
+            self._tracked_centroid = (
+                alpha * self._tracked_centroid[0] + (1.0 - alpha) * best_cx,
+                alpha * self._tracked_centroid[1] + (1.0 - alpha) * best_cy,
+            )
+            self._tracked_bbox = (
+                alpha * self._tracked_bbox[0] + (1.0 - alpha) * best_x0,
+                alpha * self._tracked_bbox[1] + (1.0 - alpha) * best_y0,
+                alpha * self._tracked_bbox[2] + (1.0 - alpha) * best_x1,
+                alpha * self._tracked_bbox[3] + (1.0 - alpha) * best_y1,
+            )
+            self._tracked_area = alpha * self._tracked_area + (1.0 - alpha) * best_area
+
+        self._frames_tracked += 1
+        self._lost_frames = 0
+        return best["coords"]
+
+    def get_secondary_face_bboxes(self, result, frame_shape, primary_landmarks=None):
         """
         Returns list of bounding boxes for NON-primary faces.
-        Used to draw a 'bystander' indicator without analysing them.
+        Accurately identifies bystanders by excluding the locked primary face index.
         """
         if not result.face_landmarks or len(result.face_landmarks) <= 1:
             return []
@@ -114,21 +218,16 @@ class FaceDetector:
         w = int(frame_shape[1])
         padding = 20
         bboxes = []
+        primary_idx = getattr(self, "_primary_face_idx", 0)
 
-        # Primary face fingerprint: centroid x,y
-        px = float(np.mean(primary_landmarks[:, 0]))
-        py = float(np.mean(primary_landmarks[:, 1]))
-
-        for face_lms in result.face_landmarks:
+        for idx, face_lms in enumerate(result.face_landmarks):
+            # The primary user is never a bystander!
+            if idx == primary_idx:
+                continue
             coords = np.array(
                 [[lm.x * w, lm.y * h, lm.z * w] for lm in face_lms],
                 dtype=np.float32,
             )
-            cx = float(np.mean(coords[:, 0]))
-            cy = float(np.mean(coords[:, 1]))
-            # Skip the primary face (close centroid match)
-            if abs(cx - px) < 30 and abs(cy - py) < 30:
-                continue
             x_min = max(0, int(np.min(coords[:, 0])) - padding)
             y_min = max(0, int(np.min(coords[:, 1])) - padding)
             x_max = min(w, int(np.max(coords[:, 0])) + padding)

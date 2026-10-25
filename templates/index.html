@@ -23,28 +23,52 @@
           <circle cx="14" cy="14" r="2.5" fill="#fff"/>
           <defs>
             <linearGradient id="g1" x1="0" y1="0" x2="28" y2="28">
-              <stop offset="0%" stop-color="#6ee7f7"/>
-              <stop offset="100%" stop-color="#a78bfa"/>
+              <stop offset="0%" stop-color="#3b82f6"/>
+              <stop offset="100%" stop-color="#f59e0b"/>
             </linearGradient>
           </defs>
         </svg>
       </div>
       <div>
-        <h1 class="brand-name">AttentionAI</h1>
-        <span class="brand-sub">Real-Time Focus Tracker</span>
+        <h1 class="brand-name">FocusTwin</h1>
+        <span class="brand-sub">Attention & Productivity Analytics</span>
       </div>
+    </div>
+    <div class="header-nav-tabs">
+      <button class="nav-tab-btn active" id="btnNavLive">📹 Live HUD</button>
+      <button class="nav-tab-btn" id="btnNavTwin">🧠 Digital Twin & Simulator</button>
+      <button class="nav-tab-btn" id="btnNavAnalytics">📊 Analytics & Patterns</button>
+      <button class="nav-tab-btn" id="btnNavPrivacy">🔒 Privacy</button>
+    </div>
+    <div class="header-status twin-state-pill" id="hudAttentionStatePill" title="5-State Attention Engine: FOCUSED, DRIFTING, DISTRACTED, RECOVERING, FATIGUE_RISK">
+      🎯 FOCUSED
     </div>
     <div class="header-status">
       <div class="live-dot" id="liveDot"></div>
       <span class="live-label" id="liveLabel">Connecting…</span>
     </div>
+    <div class="header-status firebase-status" id="firebaseStatusBadge" title="Firebase Connection Status">
+      <span class="fb-icon">🔥</span>
+      <span class="fb-label" id="firebaseStatusLabel">Firebase: Initializing…</span>
+    </div>
     <div class="header-actions">
+      <div class="user-profile-badge" id="userProfileBadge" title="Click to view/edit profile">
+        <div class="user-avatar" id="userAvatar">🧑‍🎓</div>
+        <div class="user-meta">
+          <span class="user-name" id="userDisplayName">Scholar</span>
+          <span class="user-id-badge" id="userDisplayId">Loading...</span>
+        </div>
+        <button class="btn-profile-toggle" id="btnToggleProfileModal" title="Edit Profile">✏️</button>
+      </div>
       <button class="btn btn-enable-audio" id="btnEnableAudio" title="Click to enable alert sounds">
         🔔 Enable Audio
       </button>
+      <button class="btn btn-expo-mobile" id="btnExpoModal" title="Open Mobile Companion App QR Code">
+        📱 Mobile App
+      </button>
       <button class="btn btn-ghost" id="btnReset" title="Reset session">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
-        Reset Session
+        Reset Camera
       </button>
     </div>
   </header>
@@ -59,17 +83,28 @@
   </div>
 
   <!-- ── MAIN LAYOUT ─────────────────────────────────── -->
-  <main class="main-grid">
+  <main class="main-grid" id="liveTrackingView">
 
     <!-- Left: Video Feed -->
     <section class="video-section">
       <div class="video-card">
         <div class="video-header">
-          <span class="section-label">📹 Live Feed</span>
-          <div class="fps-badge" id="fpsBadge">— FPS</div>
+          <div class="video-header-left">
+            <span class="section-label">📹 Live Feed</span>
+            <div class="camera-source-selector" id="cameraSourceSelector">
+              <button type="button" class="btn-cam-source" id="btnSourceLaptop" title="Use Laptop Webcam">💻 Laptop</button>
+              <button type="button" class="btn-cam-source" id="btnSourceMobile" title="Use Phone / Mobile Front Camera">📱 Mobile Cam</button>
+            </div>
+          </div>
+          <div class="video-header-right">
+            <span class="camera-source-badge" id="cameraSourceBadge">💻 Laptop Cam</span>
+            <div class="fps-badge" id="fpsBadge">— FPS</div>
+          </div>
         </div>
         <div class="video-wrapper" id="videoWrapper">
           <canvas id="videoCanvas" width="640" height="480"></canvas>
+          <video id="deviceCameraVideo" autoplay playsinline muted style="display:none;"></video>
+          <canvas id="mobileOffscreenCanvas" width="480" height="360" style="display:none;"></canvas>
           <div class="video-no-face hidden" id="noFaceOverlay">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
             <p>No face detected</p>
@@ -81,6 +116,158 @@
 
     <!-- Right: Dashboard -->
     <aside class="dashboard">
+
+      <!-- ── Study Session Card (Phase 1) ── -->
+      <div class="study-session-card" id="studySessionCard">
+        <div class="section-label">🎯 Study Session Control</div>
+
+        <!-- Inactive state: inputs, presets & start button -->
+        <div class="session-form-group" id="sessionInactiveGroup">
+          <div class="camera-session-indicator" id="cameraSessionIndicator">
+            <span class="cam-indicator-dot" id="camIndicatorDot"></span>
+            <span id="camIndicatorText">Tracking Camera: <strong>💻 Laptop Webcam</strong></span>
+          </div>
+          <div class="course-presets-row">
+            <span class="preset-label">Quick select:</span>
+            <button type="button" class="btn-preset" data-course="Machine Learning Specialization" data-platform="Coursera" data-url="https://www.coursera.org/specializations/machine-learning-introduction">Coursera · ML</button>
+            <button type="button" class="btn-preset" data-course="Deep Learning Specialization" data-platform="Coursera" data-url="https://www.coursera.org/specializations/deep-learning">Coursera · DL</button>
+            <button type="button" class="btn-preset" data-course="CS50: Introduction to Computer Science" data-platform="edX" data-url="https://www.edx.org/course/cs50s-introduction-to-computer-science">edX · CS50</button>
+          </div>
+          <input type="text" class="session-input" id="inputCourseName" placeholder="Course Name (e.g. Machine Learning Specialization)" />
+          <div class="session-input-row">
+            <select class="session-select" id="selectPlatform">
+              <option value="Coursera">Coursera</option>
+              <option value="edX">edX</option>
+              <option value="YouTube">YouTube</option>
+              <option value="Udemy">Udemy</option>
+              <option value="Khan Academy">Khan Academy</option>
+              <option value="Other">Other Platform</option>
+            </select>
+            <input type="url" class="session-input" id="inputCourseUrl" placeholder="Course URL (optional)" />
+          </div>
+          <button class="btn-start-session" id="btnStartSession">
+            ▶ Start Study Session
+          </button>
+        </div>
+
+        <!-- Active state: indicator, details, real-time timer & end button -->
+        <div class="active-session-box hidden" id="sessionActiveGroup">
+          <div class="active-session-header">
+            <div class="active-pulse-badge">
+              <span class="active-pulse-dot"></span>
+              🟢 SESSION ACTIVE
+            </div>
+            <span class="active-session-id-tag" id="activeSessionIdTag">—</span>
+          </div>
+          <div class="active-course-title">
+            <span id="activeCourseTitle">Course Name</span>
+            <span class="active-platform-pill" id="activePlatformPill">Coursera</span>
+          </div>
+
+          <!-- Timer -->
+          <div class="active-timer-wrap">
+            <span class="active-timer-label">Timer:</span>
+            <span class="active-timer-value" id="activeSessionTimer">00:00:00</span>
+          </div>
+
+          <!-- Phase 7 Live Monitoring HUD -->
+          <div class="active-live-hud">
+            <div class="hud-box hud-focus">
+              <span class="hud-box-label">Focus</span>
+              <span class="hud-box-val text-green" id="activeLiveFocusVal">100%</span>
+            </div>
+            <div class="hud-box hud-state">
+              <span class="hud-box-label">Twin State</span>
+              <span class="hud-box-val text-green" id="activeLiveStateVal">FOCUSED</span>
+            </div>
+            <div class="hud-box hud-distract">
+              <span class="hud-box-label">Distraction</span>
+              <span class="hud-box-val text-amber" id="activeLiveDistractionVal">0s</span>
+            </div>
+            <div class="hud-box hud-drowsy">
+              <span class="hud-box-label">Drowsiness</span>
+              <span class="hud-box-val text-red" id="activeLiveDrowsyVal">0s</span>
+            </div>
+            <div class="hud-box hud-tabs">
+              <span class="hud-box-label">Tab Switches</span>
+              <span class="hud-box-val" id="activeLiveTabSwitchesVal">0</span>
+            </div>
+          </div>
+
+          <!-- Tracking Mode Indicator -->
+          <div class="tracker-mode-badge" id="trackerModeBadge">
+            <span class="tracker-mode-dot"></span>
+            <span id="trackerModeLabel">🌐 Web Activity Tracker Active</span>
+          </div>
+
+          <div class="active-distraction-metrics">
+            <div class="active-distract-item">
+              <span class="active-distract-label">Tab Switches</span>
+              <span class="active-distract-num" id="activeTabSwitchVal">0</span>
+            </div>
+            <div class="active-distract-item">
+              <span class="active-distract-label">Tab Away</span>
+              <span class="active-distract-num" id="activeDistractionDurVal">0s</span>
+            </div>
+            <div class="active-distract-item">
+              <span class="active-distract-label">Drowsy Events</span>
+              <span class="active-distract-num" id="activeDrowsyVal">0 (0s)</span>
+            </div>
+            <div class="active-distract-item">
+              <span class="active-distract-label">Focus Lost</span>
+              <span class="active-distract-num" id="activeFocusLostVal">0 (0s)</span>
+            </div>
+          </div>
+
+          <!-- ── Session Events Log (Phase 2, 3, 4, 5) ── -->
+          <div class="session-events-box" id="sessionEventsBox">
+            <div class="events-box-header">
+              <span class="events-box-title">📋 Event Log</span>
+              <span class="events-count-badge" id="eventsCountBadge">0 events</span>
+            </div>
+            <div class="events-test-actions">
+              <button class="btn-event-quick" id="btnSimDrowsy" type="button" title="Simulate Drowsiness episode">😴 Sim Drowsy</button>
+              <button class="btn-event-quick" id="btnSimDistracted" type="button" title="Simulate Focus Loss episode">👀 Sim Distracted</button>
+              <button class="btn-event-quick" id="btnSimFocused" type="button" title="Return to Focused state">🎯 Sim Focused</button>
+              <button class="btn-event-quick" id="btnTestTabSwitch" type="button" title="Log TAB_SWITCH event">🔀 Tab Switch</button>
+              <button class="btn-event-quick" id="btnTestVideoStart" type="button" title="Log VIDEO_STARTED event">▶ Start Video</button>
+              <button class="btn-event-quick" id="btnTestVideoPause" type="button" title="Log VIDEO_PAUSED event">⏸ Pause Video</button>
+              <button class="btn-event-quick" id="btnTestVideoEnd" type="button" title="Log VIDEO_COMPLETED event">🏁 End Video</button>
+              <button class="btn-event-quick" id="btnTestPageChange" type="button" title="Log PAGE_CHANGED event">📄 Next Module</button>
+            </div>
+            <div class="events-scroll-list" id="eventsScrollList">
+              <div class="events-empty-hint" id="eventsEmptyHint">No events logged yet for this session</div>
+            </div>
+          </div>
+
+          <button class="btn-end-session" id="btnEndSession">
+            ⏹ End Session
+          </button>
+        </div>
+
+        <!-- Last Completed Session Notice -->
+        <div class="last-session-bar hidden" id="lastSessionNotice">
+          <span>Last: <strong id="lastCourseName">—</strong> (<span id="lastPlatform">—</span>)</span>
+          <span id="lastDuration">—</span>
+        </div>
+      </div>
+
+      <!-- ── Today's Sessions & Best Study Time Panel (Phase 7) ── -->
+      <div class="today-sessions-card" id="todaySessionsCard">
+        <div class="today-header">
+          <div class="today-title">
+            <span>📅 Today's Sessions</span>
+            <span class="today-count-badge" id="todaySessionsCount">0</span>
+          </div>
+          <div class="today-best-time-chip" id="todayBestTimeChip" title="Best Study Window Recommendation">
+            <span class="chip-icon">🌟</span>
+            <span id="todayBestTimeText">Best Time: Need ≥ 2 sessions</span>
+          </div>
+        </div>
+        <div class="today-sessions-list" id="todaySessionsList">
+          <div class="today-empty-hint">No sessions completed today yet. Start a session to track focus.</div>
+        </div>
+      </div>
 
       <!-- ── State Card ── -->
       <div class="state-card" id="stateCard">
@@ -183,6 +370,20 @@
               <div class="hl-bar" id="hlScoreBar" style="width:0%"></div>
             </div>
           </div>
+          <div class="highlight-row" id="hlTabSwitches">
+            <span class="hl-icon">🔀</span>
+            <div class="hl-info">
+              <div class="hl-label">Tab Switches</div>
+              <div class="hl-value" id="hlTabSwitchVal">0</div>
+            </div>
+          </div>
+          <div class="highlight-row" id="hlDistractionDur">
+            <span class="hl-icon">⏱️</span>
+            <div class="hl-info">
+              <div class="hl-label">Distraction Away Time</div>
+              <div class="hl-value" id="hlDistractionDurVal">0s</div>
+            </div>
+          </div>
         </div>
 
         <!-- Export -->
@@ -192,19 +393,637 @@
 
       </div>
 
-      <!-- ── Timeline Chart ── -->
+      <!-- ── Timeline Chart & Visual Stream (Panel 3) ── -->
       <div class="timeline-card">
-        <div class="section-label">📈 Attention Timeline</div>
+        <div class="section-label">📈 Attention Timeline & Milestones</div>
         <canvas id="timelineChart" height="80"></canvas>
+        <div class="visual-timeline-wrap">
+          <div class="visual-timeline-label">⚡ Real-Time Attention Transitions:</div>
+          <div class="visual-timeline-stream" id="visualTimelineStream">
+            <div class="timeline-empty-hint">Start a study session to track milestones.</div>
+          </div>
+        </div>
       </div>
 
     </aside>
   </main>
 
+  <!-- ── PRODUCTIVITY ANALYTICS (PHASE 6) ────────────────── -->
+  <section class="analytics-view hidden" id="analyticsView">
+    <div class="an-header">
+      <div>
+        <h2 class="an-title">Productivity & Focus Analytics</h2>
+        <p class="an-subtitle">Historical insights, time-of-day focus performance, and study recommendations.</p>
+      </div>
+      <button class="btn btn-ghost" id="btnRefreshAnalytics" title="Refresh analytics data">
+        🔄 Refresh Data
+      </button>
+    </div>
+
+    <!-- Best Study Time Recommendation Banner -->
+    <div class="an-banner" id="anBestTimeBanner">
+      <div class="an-banner-content">
+        <span class="an-banner-icon">🌟</span>
+        <div>
+          <h3 class="an-banner-title" id="anBestTimeTitle">Peak Study Window</h3>
+          <p class="an-banner-desc" id="anBestTimeDesc">Calculating your strongest focus period...</p>
+        </div>
+      </div>
+      <div class="an-banner-metric" id="anBestTimeScore">--%</div>
+    </div>
+
+    <!-- Today's Metrics Overview (6 Cards) -->
+    <div class="an-cards-grid">
+      <div class="an-card">
+        <div class="an-card-label">⏱️ Today's Study Time</div>
+        <div class="an-card-value" id="anTodayStudyTime">0s</div>
+        <div class="an-card-sub">Total session duration</div>
+      </div>
+      <div class="an-card">
+        <div class="an-card-label">🎯 Focused Time</div>
+        <div class="an-card-value text-green" id="anTodayFocusedTime">0s</div>
+        <div class="an-card-sub">Active engaged learning</div>
+      </div>
+      <div class="an-card">
+        <div class="an-card-label">⚡ Distraction Time</div>
+        <div class="an-card-value text-amber" id="anTodayDistractionTime">0s</div>
+        <div class="an-card-sub">Tab switches & off-task</div>
+      </div>
+      <div class="an-card">
+        <div class="an-card-label">😴 Drowsiness Duration</div>
+        <div class="an-card-value text-red" id="anTodayDrowsinessTime">0s</div>
+        <div class="an-card-sub">Micro-sleeps & eye fatigue</div>
+      </div>
+      <div class="an-card">
+        <div class="an-card-label">🔀 Tab Switches</div>
+        <div class="an-card-value" id="anTodayTabSwitches">0</div>
+        <div class="an-card-sub">Context switching events</div>
+      </div>
+      <div class="an-card">
+        <div class="an-card-label">🏆 Focus Score</div>
+        <div class="an-card-value" id="anTodayFocusScore">100%</div>
+        <div class="an-card-sub">Objective scoring algorithm</div>
+      </div>
+    </div>
+
+    <!-- Charts Grid (5 Visualizations) -->
+    <div class="an-charts-grid">
+      <!-- Chart 1: Focus Score Over Time -->
+      <div class="an-chart-card span-2">
+        <div class="an-chart-header">
+          <span class="section-label">📈 Focus Score Over Time</span>
+          <span class="an-chart-tag">Trend line & individual sessions</span>
+        </div>
+        <div class="an-canvas-wrap">
+          <canvas id="chartFocusOverTime" height="220"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 2: Study Duration by Day -->
+      <div class="an-chart-card">
+        <div class="an-chart-header">
+          <span class="section-label">📅 Study Duration by Day</span>
+          <span class="an-chart-tag">Last 7 Days (minutes)</span>
+        </div>
+        <div class="an-canvas-wrap">
+          <canvas id="chartDurationByDay" height="220"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 3: Focus by Time of Day -->
+      <div class="an-chart-card">
+        <div class="an-chart-header">
+          <span class="section-label">⏰ Focus by Time of Day</span>
+          <span class="an-chart-tag">Average Focus Score (%)</span>
+        </div>
+        <div class="an-canvas-wrap">
+          <canvas id="chartFocusByTimeOfDay" height="220"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 4: Distraction vs Focus Breakdown -->
+      <div class="an-chart-card">
+        <div class="an-chart-header">
+          <span class="section-label">⚖️ Distraction vs Focus</span>
+          <span class="an-chart-tag">Time Distribution</span>
+        </div>
+        <div class="an-canvas-wrap">
+          <canvas id="chartDistractionVsFocus" height="220"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 5: Drowsiness Trend -->
+      <div class="an-chart-card">
+        <div class="an-chart-header">
+          <span class="section-label">💤 Drowsiness Trend</span>
+          <span class="an-chart-tag">Fatigue (seconds per session)</span>
+        </div>
+        <div class="an-canvas-wrap">
+          <canvas id="chartDrowsinessTrend" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Session History -->
+    <div class="an-history-card">
+      <div class="an-chart-header">
+        <span class="section-label">📜 Completed Study Sessions</span>
+        <span class="an-chart-tag">Detailed Focus Metrics</span>
+      </div>
+      <div class="an-table-wrap">
+        <table class="an-history-table">
+          <thead>
+            <tr>
+              <th>Course / Platform</th>
+              <th>Date & Time</th>
+              <th>Duration</th>
+              <th>Focus Score</th>
+              <th>Distraction & Tabs</th>
+              <th>Drowsiness</th>
+              <th>Breakdown</th>
+            </tr>
+          </thead>
+          <tbody id="anSessionHistoryBody">
+            <tr><td colspan="7" class="an-empty-row">Loading session history...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DIGITAL TWIN & COUNTERFACTUAL SIMULATOR (PHASE 7) ──── -->
+  <section class="twin-simulator-view hidden" id="twinSimulatorView">
+    <div class="twin-header-bar">
+      <div>
+        <h2 class="twin-main-title">🧠 Attention Digital Twin & Simulator</h2>
+        <p class="twin-main-sub">Personal behavioral modeling, counterfactual simulation & closed-loop adaptation.</p>
+      </div>
+      <div class="twin-header-actions">
+        <button class="btn btn-ghost" id="btnRecomputeTwin" title="Synthesize Digital Twin from complete session history">
+          🔄 Recompute Twin Profile
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Phase 8: Demo Hardening & Simulated Notification Trigger Bar ── -->
+    <div class="demo-trigger-card" id="demoTriggerCard">
+      <div class="demo-card-header">
+        <div class="demo-title-wrap">
+          <span class="demo-icon">🎮</span>
+          <div>
+            <h4 class="demo-title">DEMO NOTIFICATION MODE</h4>
+            <span class="demo-sub">Simulated Interruption Quick-Triggers — Explicitly labelled: <strong>SIMULATED NOTIFICATION (Not intercepting OS)</strong></span>
+          </div>
+        </div>
+        <div class="demo-actions-top">
+          <button class="btn btn-sm btn-ghost" id="btnSeedDemoPersona" type="button" title="Seed 12 calibrated sessions for Ada Lovelace">✨ Seed Demo Persona</button>
+          <button class="btn btn-sm btn-ghost" id="btnCleanDemoData" type="button" title="Purge demo data without touching real user sessions">🧹 Clean Demo Data</button>
+          <button class="btn btn-sm btn-primary" id="btnRunDeterministicFlow" type="button" title="Run full 8-step closed loop automated walkthrough">▶ Run Deterministic Flow</button>
+        </div>
+      </div>
+
+      <div class="demo-triggers-row">
+        <button class="btn-demo-trigger" data-key="DISCORD_MESSAGE" id="btnTriggerDiscord" type="button">
+          <span class="trig-icon">💬</span>
+          <span class="trig-label">Discord Message</span>
+          <small>Deep Coding</small>
+        </button>
+        <button class="btn-demo-trigger" data-key="WORK_EMAIL" id="btnTriggerEmail" type="button">
+          <span class="trig-icon">📧</span>
+          <span class="trig-label">Work Email</span>
+          <small>PR Review Request</small>
+        </button>
+        <button class="btn-demo-trigger" data-key="SOCIAL_NOTIFICATION" id="btnTriggerSocial" type="button">
+          <span class="trig-icon">📱</span>
+          <span class="trig-label">Social Alert</span>
+          <small>Instagram / Rabbit Hole</small>
+        </button>
+        <button class="btn-demo-trigger" data-key="CALENDAR_ALERT" id="btnTriggerCalendar" type="button">
+          <span class="trig-icon">📅</span>
+          <span class="trig-label">Calendar Alert</span>
+          <small>Standup in 5m</small>
+        </button>
+        <button class="btn-demo-trigger" data-key="LEARNING_REMINDER" id="btnTriggerReminder" type="button">
+          <span class="trig-icon">🔔</span>
+          <span class="trig-label">Learning Reminder</span>
+          <small>Course Streak Nudge</small>
+        </button>
+      </div>
+
+      <!-- Live Interactive Demo Notification Evaluation Container -->
+      <div class="demo-live-modal hidden" id="demoLiveModal">
+        <div class="demo-modal-header">
+          <div class="demo-badge-wrap">
+            <span class="sim-pill">SIMULATED NOTIFICATION</span>
+            <strong id="demoModalNotifTitle">Discord: New message</strong>
+          </div>
+          <button class="btn-dismiss" id="btnCloseDemoModal" type="button" title="Close">✕</button>
+        </div>
+        <div class="demo-modal-body" id="demoModalBody"></div>
+      </div>
+
+      <!-- Deterministic Flow Output Modal -->
+      <div class="deterministic-result-card hidden" id="deterministicResultCard">
+        <div class="det-header">
+          <div class="det-title-wrap">
+            <span class="det-icon">🏆</span>
+            <strong id="detFlowTitle">Deterministic Vertical Slice Report</strong>
+          </div>
+          <button class="btn-dismiss" id="btnCloseDeterministicCard" type="button">✕</button>
+        </div>
+        <div class="det-body" id="detFlowBody"></div>
+      </div>
+    </div>
+
+    <div class="twin-grid-layout">
+
+      <!-- Column Left: Twin Profile + Diagnostic -->
+      <div class="twin-col-left">
+
+        <!-- Panel 2: Digital Twin Profile Card -->
+        <div class="twin-panel-card" id="twinProfileCard">
+          <div class="twin-panel-header">
+            <div class="twin-panel-title-wrap">
+              <span class="twin-panel-icon">👤</span>
+              <h3 class="twin-panel-title">Digital Twin Profile</h3>
+            </div>
+            <div class="twin-badges-wrap">
+              <span class="twin-badge badge-learning" id="twinColdStartBadge">LEARNING</span>
+              <span class="twin-badge-metric" id="twinConfidenceVal">MEDIUM</span>
+            </div>
+          </div>
+          <p class="twin-profile-desc" id="twinStatusMsg">
+            Digital Twin calibrated to your personal study rhythms.
+          </p>
+
+          <div class="twin-metrics-grid">
+            <div class="twin-stat-box">
+              <span class="stat-label">Peak Attention Window</span>
+              <span class="stat-val text-cyan" id="twinPeakWindowVal">Afternoon (12–5 PM)</span>
+              <span class="stat-sub">Strongest focus window</span>
+            </div>
+            <div class="twin-stat-box">
+              <span class="stat-label">Typical Focus Duration</span>
+              <span class="stat-val text-green" id="twinFocusDurVal">25 min</span>
+              <span class="stat-sub">Continuous engagement span</span>
+            </div>
+            <div class="twin-stat-box">
+              <span class="stat-label">Interruption Sensitivity</span>
+              <span class="stat-val text-amber" id="twinSensitivityVal">Moderate (50%)</span>
+              <span class="stat-sub">Susceptibility to alerts</span>
+            </div>
+            <div class="twin-stat-box">
+              <span class="stat-label">Typical Recovery Time</span>
+              <span class="stat-val" id="twinRecoveryVal">35s</span>
+              <span class="stat-sub">To regain high focus</span>
+            </div>
+            <div class="twin-stat-box">
+              <span class="stat-label">Fatigue Onset Inflection</span>
+              <span class="stat-val text-red" id="twinFatigueVal">45 min</span>
+              <span class="stat-sub">Focus degradation begins</span>
+            </div>
+            <div class="twin-stat-box">
+              <span class="stat-label">Sessions Observed</span>
+              <span class="stat-val" id="twinSampleSizeVal">0 sessions</span>
+              <span class="stat-sub">Total calibrated corpus</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 4: "Why Was I Distracted?" Diagnostic Card -->
+        <div class="twin-panel-card">
+          <div class="twin-panel-header">
+            <div class="twin-panel-title-wrap">
+              <span class="twin-panel-icon">🔍</span>
+              <h3 class="twin-panel-title">Why Was I Distracted?</h3>
+            </div>
+            <button class="btn btn-sm btn-ghost" id="btnRefreshDiagnostic" title="Re-evaluate recent focus drops">
+              🔄 Analyze
+            </button>
+          </div>
+          <div class="diagnostic-container" id="diagnosticCard">
+            <div class="diagnostic-positive">
+              <span class="diag-icon">🌟</span>
+              <div>
+                <h4>No Recent Focus Drops</h4>
+                <p>Continuous concentration maintained across observed window.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 6: Attention Patterns & Contextual Load -->
+        <div class="twin-panel-card">
+          <div class="twin-panel-header">
+            <div class="twin-panel-title-wrap">
+              <span class="twin-panel-icon">⚡</span>
+              <h3 class="twin-panel-title">Attention Patterns & Task Contexts</h3>
+            </div>
+            <span class="twin-badge-metric">Cognitive Resilience</span>
+          </div>
+          <div class="patterns-list">
+            <div class="pattern-item">
+              <div class="pattern-header">
+                <span class="pattern-name">💻 Coding & Programming</span>
+                <span class="pattern-score text-green">84% Resilience</span>
+              </div>
+              <div class="pattern-bar-wrap"><div class="pattern-bar bar-green" style="width: 84%"></div></div>
+              <span class="pattern-desc">High flow state. Notifications cause severe 5x recovery lag.</span>
+            </div>
+            <div class="pattern-item">
+              <div class="pattern-header">
+                <span class="pattern-name">📖 Reading & Research</span>
+                <span class="pattern-score text-cyan">72% Resilience</span>
+              </div>
+              <div class="pattern-bar-wrap"><div class="pattern-bar bar-cyan" style="width: 72%"></div></div>
+              <span class="pattern-desc">Moderate resilience. Tab switching bursts increase distraction risk.</span>
+            </div>
+            <div class="pattern-item">
+              <div class="pattern-header">
+                <span class="pattern-name">🎥 Video Lecture Watching</span>
+                <span class="pattern-score text-amber">61% Resilience</span>
+              </div>
+              <div class="pattern-bar-wrap"><div class="pattern-bar bar-amber" style="width: 61%"></div></div>
+              <span class="pattern-desc">Passive consumption vulnerability. Eye fatigue accelerates after 30m.</span>
+            </div>
+            <div class="pattern-item">
+              <div class="pattern-header">
+                <span class="pattern-name">🌐 Prolonged Browsing Risk</span>
+                <span class="pattern-score text-red">High Overrun Risk (68%)</span>
+              </div>
+              <div class="pattern-bar-wrap"><div class="pattern-bar bar-red" style="width: 68%"></div></div>
+              <span class="pattern-desc">Social & communication tabs frequently trigger rabbit hole sessions.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Column Right: Simulator + Accuracy Telemetry -->
+      <div class="twin-col-right">
+
+        <!-- Panel 5: Notification Simulator Card -->
+        <div class="twin-panel-card" id="notificationSimulatorCard">
+          <div class="twin-panel-header">
+            <div class="twin-panel-title-wrap">
+              <span class="twin-panel-icon">🎮</span>
+              <h3 class="twin-panel-title">Notification Simulator (Counterfactual Engine)</h3>
+            </div>
+            <span class="twin-badge badge-sim">ALLOW vs DEFER</span>
+          </div>
+          <p class="sim-card-intro">
+            Simulate the attention impact of an incoming notification before it interrupts the user. Tests what would happen if delivered immediately versus deferred.
+          </p>
+
+          <!-- Simulator Config Form -->
+          <div class="sim-config-form">
+            <div class="sim-form-row">
+              <label for="simPresetSelect">Quick Preset Scenario:</label>
+              <select class="sim-select" id="simPresetSelect">
+                <option value="">-- Choose a realistic preset scenario --</option>
+              </select>
+            </div>
+
+            <div class="sim-form-grid">
+              <div class="sim-field">
+                <label for="simSourceInput">Notification Source</label>
+                <input type="text" class="sim-input" id="simSourceInput" value="Discord" placeholder="e.g. Slack, Discord, Email" />
+              </div>
+              <div class="sim-field">
+                <label for="simCategorySelect">Category</label>
+                <select class="sim-select" id="simCategorySelect">
+                  <option value="MESSAGE">Direct Message</option>
+                  <option value="EMAIL">Work Email</option>
+                  <option value="CALENDAR">Calendar Alert</option>
+                  <option value="SOCIAL">Social Media</option>
+                  <option value="NEWS">News / Feeds</option>
+                </select>
+              </div>
+              <div class="sim-field">
+                <label for="simTaskSelect">Task Context</label>
+                <select class="sim-select" id="simTaskSelect">
+                  <option value="Coding">Coding</option>
+                  <option value="Reading">Reading</option>
+                  <option value="Video">Video Lecture</option>
+                  <option value="Problem Solving">Problem Solving</option>
+                  <option value="Writing">Writing</option>
+                </select>
+              </div>
+              <div class="sim-field">
+                <label for="simDurationInput">Session Elapsed (min)</label>
+                <input type="number" class="sim-input" id="simDurationInput" value="35" min="1" max="300" />
+              </div>
+              <div class="sim-field">
+                <label for="simDeferInput">Defer By (min)</label>
+                <input type="number" class="sim-input" id="simDeferInput" value="15" min="5" max="120" />
+              </div>
+            </div>
+
+            <button class="btn-run-simulation" id="btnRunSimulation" type="button">
+              ⚡ Simulate Counterfactual
+            </button>
+          </div>
+
+          <!-- Dynamic Simulation Result Container -->
+          <div class="sim-result-container" id="simResultContainer">
+            <div class="sim-placeholder-hint">
+              Select a preset or configure parameters above, then click <strong>"Simulate Counterfactual"</strong> to compare immediate delivery vs deferred delivery paths.
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 7: Prediction Accuracy & Closed-Loop Telemetry -->
+        <div class="twin-panel-card" id="accuracyTelemetryCard">
+          <div class="twin-panel-header">
+            <div class="twin-panel-title-wrap">
+              <span class="twin-panel-icon">🎯</span>
+              <h3 class="twin-panel-title">Prediction Accuracy & Closed-Loop Learning</h3>
+            </div>
+            <span class="twin-badge badge-active" id="accLearningStatus">CALIBRATING</span>
+          </div>
+          <p class="sim-card-intro">
+            Closed-loop telemetry evaluates simulated predictions against real outcomes to continuously update your twin's sensitivity and recovery baselines.
+          </p>
+
+          <!-- Accuracy Overview 4-Stat Box -->
+          <div class="accuracy-stats-grid">
+            <div class="acc-stat-box">
+              <span class="acc-label">Predictions Evaluated</span>
+              <span class="acc-val" id="accTotalEvaluated">0</span>
+            </div>
+            <div class="acc-stat-box">
+              <span class="acc-label">Mean Absolute Error</span>
+              <span class="acc-val text-amber" id="accMaeVal">0s</span>
+            </div>
+            <div class="acc-stat-box">
+              <span class="acc-label">RMSE</span>
+              <span class="acc-val" id="accRmseVal">0s</span>
+            </div>
+            <div class="acc-stat-box">
+              <span class="acc-label">Model Accuracy</span>
+              <span class="acc-val text-cyan" id="accAveragePct">100%</span>
+            </div>
+          </div>
+
+          <!-- 'LAST PREDICTION' Telemetry Widget -->
+          <div class="last-prediction-wrap" id="lastPredictionWidget">
+            <div class="lp-empty">
+              No closed-loop evaluations completed yet. Run a simulation and click "Record Outcome & Learn" to see real-time error tracking.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── PRIVACY & DATA GOVERNANCE (PANEL 8) ────────────────── -->
+  <section class="privacy-view hidden" id="privacyView">
+    <div class="privacy-header-bar">
+      <div>
+        <h2 class="privacy-main-title">🔒 Privacy, Agency & Data Governance</h2>
+        <p class="privacy-main-sub">Your cognitive telemetry belongs to you. Transparent on-device computation with zero raw video transfer.</p>
+      </div>
+    </div>
+
+    <!-- Transparent Privacy Trust Grid -->
+    <div class="privacy-trust-grid">
+      <div class="privacy-trust-card">
+        <div class="trust-icon">💻</div>
+        <h4 class="trust-title">100% Local CV Inference</h4>
+        <p class="trust-desc">
+          MediaPipe FaceMesh executes directly within your browser runtime using WebGL/WebAssembly. Landmark vectors are analyzed in volatile memory.
+        </p>
+      </div>
+
+      <div class="privacy-trust-card">
+        <div class="trust-icon">🚫</div>
+        <h4 class="trust-title">Zero Raw Video Stored</h4>
+        <p class="trust-desc">
+          Camera frames are never uploaded, recorded, or saved to any disk or external server. Only numerical telemetry (EAR, head pose angles) is processed.
+        </p>
+      </div>
+
+      <div class="privacy-trust-card">
+        <div class="trust-icon">👁️</div>
+        <h4 class="trust-title">Zero Screen Capture</h4>
+        <p class="trust-desc">
+          The study tracker does not record your screen or take screenshots. Page context is derived exclusively through URL platform tags and active window title metadata.
+        </p>
+      </div>
+
+      <div class="privacy-trust-card">
+        <div class="trust-icon">🛡️</div>
+        <h4 class="trust-title">Metadata-Only Event Logs</h4>
+        <p class="trust-desc">
+          Interruption events track notification category (MESSAGE, EMAIL) and time duration. Message contents, keystrokes, and text are never inspected.
+        </p>
+      </div>
+    </div>
+
+    <!-- Data Sovereignty & Management Panel -->
+    <div class="privacy-actions-card">
+      <div class="privacy-actions-header">
+        <span class="section-label">⚙️ Data Sovereignty & Control</span>
+        <span class="privacy-tag">GDPR & Digital Sovereignty Aligned</span>
+      </div>
+      <p class="privacy-actions-intro">
+        Exercise full agency over your digital twin model and session logs at any time.
+      </p>
+
+      <div class="privacy-buttons-grid">
+        <div class="privacy-button-box">
+          <div class="p-btn-info">
+            <h5>Download Personal Telemetry</h5>
+            <p>Export all historical sessions, events, attention profiles, and counterfactual predictions as a JSON bundle.</p>
+          </div>
+          <button class="btn btn-primary" id="btnExportPrivacyData">
+            📦 Export Data (JSON)
+          </button>
+        </div>
+
+        <div class="privacy-button-box">
+          <div class="p-btn-info">
+            <h5>Reset Digital Twin Model</h5>
+            <p>Erase personalized sensitivities, recovery rates, and diurnal windows. Resets profile back to cold-start LEARNING state.</p>
+          </div>
+          <button class="btn btn-warning" id="btnClearTwinProfile">
+            🔄 Reset Twin Profile
+          </button>
+        </div>
+
+        <div class="privacy-button-box">
+          <div class="p-btn-info">
+            <h5>Permanently Erase Session Events</h5>
+            <p>Deletes all raw study session event timestamps, tab-switch records, and drowsiness history from the SQLite database.</p>
+          </div>
+          <button class="btn btn-danger" id="btnPurgeHistory">
+            🗑️ Purge All History
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ── TOAST ─────────────────────────────────────── -->
   <div class="toast hidden" id="toast"></div>
 
-  <script src="/static/js/alerts.js"></script>
-  <script src="/static/js/app.js"></script>
+  <!-- ── USER PROFILE MODAL ───────────────────────────── -->
+  <div class="modal-overlay hidden" id="profileModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">🧑‍🎓 User Profile</h3>
+        <button class="btn-modal-close" id="btnCloseProfileModal">✕</button>
+      </div>
+      <div class="modal-field">
+        <label>Unique User ID</label>
+        <div class="modal-field-readonly">
+          <span id="modalUserId">usr_...</span>
+          <button class="btn-copy-id" id="btnCopyUserId" title="Copy User ID">📋 Copy</button>
+        </div>
+      </div>
+      <div class="modal-field">
+        <label for="modalUserName">Full Name</label>
+        <input type="text" class="session-input" id="modalUserName" placeholder="Your Name" />
+      </div>
+      <div class="modal-field">
+        <label for="modalUserEmail">Email Address</label>
+        <input type="email" class="session-input" id="modalUserEmail" placeholder="scholar@example.com" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-primary" id="btnSaveProfile">Save Profile</button>
+        <button class="btn-modal-secondary" id="btnCreateNewUser">+ New User</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── EXPO MOBILE APP MODAL ───────────────────────── -->
+  <div class="profile-modal-backdrop hidden" id="expoModalBackdrop">
+    <div class="profile-modal-card" style="text-align: center; max-width: 420px; border: 1.5px solid rgba(59,130,246,0.4);">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: #60a5fa;">📱 FocusTwin Mobile Companion</h3>
+        <button class="modal-close" id="btnCloseExpoModal">✕</button>
+      </div>
+      <p style="color: #9ca3af; font-size: 13px; margin: 8px 0 16px; line-height: 1.4;">
+        Scan with <strong>Expo Go</strong> on iOS / Android (connected to same Wi-Fi) to run FocusTwin natively on your phone.
+      </p>
+      <div style="background: #ffffff; padding: 14px; border-radius: 14px; display: inline-block; box-shadow: 0 4px 24px rgba(0,0,0,0.6);">
+        <img src="/static/focustwin_expo_qr.png" alt="FocusTwin Expo QR Code" style="width: 250px; height: 310px; object-fit: contain; display: block;" />
+      </div>
+      <div style="margin-top: 16px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+        <div style="font-size: 11px; color: #9ca3af; margin-bottom: 4px;">Direct Expo URL (or manual entry):</div>
+        <code style="font-size: 13px; color: #22d67a; font-weight: bold; user-select: all;">exp://192.168.110.224:8081</code>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/alerts.js?v=8.1"></script>
+  <script src="/static/js/events.js?v=8.1"></script>
+  <script src="/static/js/app.js?v=8.1"></script>
+  <script src="/static/js/analytics.js?v=8.1"></script>
+  <script src="/static/js/digital_twin_ui.js?v=8.1"></script>
+  <script type="module" src="/static/js/firebase-init.js?v=8.1"></script>
 </body>
 </html>

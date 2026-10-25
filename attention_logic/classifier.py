@@ -6,6 +6,7 @@ States: "Focused", "Distracted", "Drowsy"
 
 import time
 from collections import deque
+from .attention_state_engine import AttentionStateEngine
 
 
 # ── Drowsiness thresholds ──────────────────────────────────────────
@@ -24,9 +25,11 @@ HISTORY_LEN = 30                # smooth over ~1s at 30fps
 
 class AttentionClassifier:
     def __init__(self):
-        self.state_history = deque(maxlen=HISTORY_LEN)
-        self.current_state = "Focused"
-        self.confidence    = 1.0
+        self.engine          = AttentionStateEngine()
+        self.state_history   = deque(maxlen=HISTORY_LEN)
+        self.current_state   = "Focused"
+        self.attention_state = "FOCUSED"
+        self.confidence      = 1.0
 
         # Session timing
         self.session_start   = time.time()
@@ -42,7 +45,7 @@ class AttentionClassifier:
 
     # ── Core Classification ─────────────────────────────────────────
 
-    def classify(self, ear_stats, gaze_stats, pose_stats):
+    def classify(self, ear_stats, gaze_stats, pose_stats, face_detected: bool = True):
         """
         Returns (state: str, confidence: float, signals: dict)
         """
@@ -101,6 +104,19 @@ class AttentionClassifier:
                     )
             self._streak_state = self.current_state
             self._streak_start = now
+
+        # ── 5-State Attention Engine Evaluation (Phase 2) ────────
+        engine_state, engine_conf, engine_sigs, emitted_event = self.engine.evaluate(
+            ear_stats=ear_stats,
+            gaze_stats=gaze_stats,
+            pose_stats=pose_stats,
+            face_detected=face_detected,
+        )
+        self.attention_state = engine_state
+        signals["attention_state"] = engine_state
+        signals["attention_confidence"] = engine_conf
+        signals["attention_signals"] = engine_sigs
+        signals["attention_event"] = emitted_event
 
         return self.current_state, round(self.confidence, 2), signals
 
@@ -172,3 +188,5 @@ class AttentionClassifier:
         self.longest_distract_sec  = 0.0
         self._streak_state = None
         self._streak_start = time.time()
+        self.engine.reset()
+        self.attention_state = "FOCUSED"

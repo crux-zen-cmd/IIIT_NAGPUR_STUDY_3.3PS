@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "AttentionAI - Study Session Tracker",
+  "version": "1.0.0",
+  "description": "Monitors study sessions, Coursera learning activity, and tab switches to record distraction metrics.",
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://localhost:5050/*",
+    "http://127.0.0.1:5050/*",
+    "https://*.coursera.org/*",
+    "https://*.edx.org/*",
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.coursera.org/*",
+        "https://*.edx.org/*",
+        "https://*.youtube.com/*",
+        "http://localhost:5050/*",
+        "http://127.0.0.1:5050/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AttentionAI Study Tracker"
+  }
+}

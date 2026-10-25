@@ -13,6 +13,10 @@ env/
 # Session data
 data/
 sessions/
+*.db
+*.sqlite*
+node_modules/
+.expo/
 
 # macOS
 .DS_Store
