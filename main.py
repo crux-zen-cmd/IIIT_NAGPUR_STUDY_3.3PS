@@ -1,3 +1,7 @@
+"""
+AttentionAI — Real-Time Attention Tracker Flask Application & Streaming Pipeline.
+"""
+
 import os
 import sys
 
