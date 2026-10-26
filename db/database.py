@@ -310,7 +310,7 @@ def get_user_by_email(email: str) -> Optional[Dict[str, Any]]:
 def list_users() -> List[Dict[str, Any]]:
     with get_connection() as conn:
         cur = conn.cursor()
-        cur.execute("SELECT * FROM users ORDER BY created_at ASC")
+        cur.execute("SELECT * FROM users ORDER BY is_demo ASC, created_at ASC")
         return [_format_user(dict(r)) for r in cur.fetchall()]
 
 

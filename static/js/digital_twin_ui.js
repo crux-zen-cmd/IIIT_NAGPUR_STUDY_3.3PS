@@ -75,15 +75,17 @@
 
   // ── Current User Resolution ─────────────────────────────────────
   async function resolveUser() {
-    if (activeUserId) return activeUserId;
     try {
       const res = await fetch("/api/users");
       const users = await res.json();
       if (users && users.length > 0) {
-        activeUserId = users[0].user_id;
+        const savedId = localStorage.getItem("studyTracker_userId");
+        const chosen = (savedId && users.find(u => u.user_id === savedId)) || users[0];
+        activeUserId = chosen.user_id;
+        localStorage.setItem("studyTracker_userId", activeUserId);
         const nameEl = document.getElementById("userDisplayName");
         const idEl = document.getElementById("userDisplayId");
-        if (nameEl) nameEl.textContent = users[0].name || "Scholar";
+        if (nameEl) nameEl.textContent = chosen.name || "Scholar";
         if (idEl) idEl.textContent = activeUserId;
       }
     } catch (e) {
