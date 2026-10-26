@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/bg_cream_card"
+    android:padding="22dp">
+
+    <!-- Header Icon -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:gravity="center"
+            android:text="☀️🌙"
+            android:textSize="26sp"
+            android:background="@drawable/bg_profile_avatar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="When Do You Focus Best?"
+            android:textColor="@color/primary_taupe_deep"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select your study rhythm so AttentionAI can tailor your peak focus hours and statistics."
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+
+    <!-- Option 1: Day Person (Early Bird) -->
+    <LinearLayout
+        android:id="@+id/layoutOptionDay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_card_selected"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:text="☀️"
+            android:textSize="22sp"
+            android:gravity="center"
+            android:background="@drawable/bg_circle_indicator"
+            android:backgroundTint="@color/status_distracted_bg" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Day Person (Early Bird)"
+                android:textColor="@color/primary_taupe_deep"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Peak alertness in morning and afternoon (6:00 AM – 6:00 PM)"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvRadioDay"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:text="✓"
+            android:textColor="@color/text_on_taupe"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:background="@drawable/bg_profile_avatar"
+            android:backgroundTint="@color/primary_taupe" />
+    </LinearLayout>
+
+    <!-- Option 2: Night Person (Night Owl) -->
+    <LinearLayout
+        android:id="@+id/layoutOptionNight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_card_unselected"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:text="🌙"
+            android:textSize="22sp"
+            android:gravity="center"
+            android:background="@drawable/bg_circle_indicator"
+            android:backgroundTint="@color/bg_cream_secondary" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Night Person (Night Owl)"
+                android:textColor="@color/primary_taupe_deep"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Deepest focus in evening and late night (8:00 PM – 3:00 AM)"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvRadioNight"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:text=""
+            android:textColor="@color/primary_taupe"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:background="@drawable/bg_profile_avatar" />
+    </LinearLayout>
+
+    <!-- Confirm Button -->
+    <Button
+        android:id="@+id/btnSaveChronotype"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:text="✓ Save Study Rhythm"
+        android:textColor="@color/text_on_taupe"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:background="@drawable/bg_button_restore"
+        android:elevation="2dp" />
+
+</LinearLayout>

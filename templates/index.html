@@ -69,6 +69,9 @@
       <button class="btn btn-enable-audio" id="btnEnableAudio" title="Click to enable alert sounds">
         🔔 Enable Audio
       </button>
+      <button class="btn btn-focus-pro" id="btnFocusProModal" style="background: linear-gradient(135deg, #1e3a8a, #2563eb); color: #fff; font-weight: 600; border: 1px solid rgba(255,255,255,0.2);" title="Focus Pro Subscription Plans">
+        👑 Focus Pro
+      </button>
       <button class="btn btn-expo-mobile" id="btnExpoModal" title="Open Mobile Companion App QR Code">
         📱 Mobile App
       </button>
@@ -1086,6 +1089,69 @@
         <div style="font-size: 11px; color: #9ca3af; margin-bottom: 4px;">Direct Expo URL (or manual entry):</div>
         <code
           style="font-size: 13px; color: #22d67a; font-weight: bold; user-select: all;">exp://192.168.110.224:8081</code>
+      </div>
+    </div>
+  <!-- ── FOCUS PRO SUBSCRIPTION MODAL ─────────────────── -->
+  <div class="profile-modal-backdrop hidden" id="focusProModalBackdrop">
+    <div class="profile-modal-card" style="max-width: 480px; border: 1.5px solid rgba(245, 158, 11, 0.4); text-align: left; padding: 22px;">
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 class="modal-title" style="color: #fbbf24; display: flex; align-items: center; gap: 8px;">
+          <span>👑</span> Unlock Focus Pro
+        </h3>
+        <button class="modal-close" id="btnCloseFocusProModal" style="background: none; border: none; font-size: 18px; color: #9ca3af; cursor: pointer;">✕</button>
+      </div>
+      <p style="color: #cbd5e1; font-size: 13px; margin-bottom: 16px;">
+        Supercharge your study sessions with unlimited AI face &amp; gaze tracking, distraction locks, and 2X coin multipliers.
+      </p>
+
+      <!-- Plans -->
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
+        <!-- Annual Plan -->
+        <div id="webPlanYearly" style="background: rgba(30, 58, 138, 0.35); border: 2px solid #3b82f6; border-radius: 12px; padding: 14px; cursor: pointer; transition: all 0.2s;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-weight: 700; color: #fff; font-size: 15px;">Annual Plan</span>
+                <span style="background: #f59e0b; color: #000; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">BEST VALUE · SAVE 58%</span>
+              </div>
+              <div style="font-size: 12px; color: #94a3b8; margin-top: 2px;">7-Day Free Trial · Billed annually at ₹1,499/yr</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 17px; font-weight: 800; color: #60a5fa;">₹125</div>
+              <div style="font-size: 10px; color: #94a3b8;">/ month</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monthly Plan -->
+        <div id="webPlanMonthly" style="background: rgba(255, 255, 255, 0.04); border: 1.5px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px; cursor: pointer; transition: all 0.2s;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-weight: 700; color: #fff; font-size: 15px;">Monthly Plan</div>
+              <div style="font-size: 12px; color: #94a3b8; margin-top: 2px;">Flexible month-to-month · Cancel anytime</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 17px; font-weight: 800; color: #60a5fa;">₹299</div>
+              <div style="font-size: 10px; color: #94a3b8;">/ month</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Perks List -->
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px; margin-bottom: 16px; font-size: 12px; color: #cbd5e1; line-height: 1.6;">
+        <div>⚡ <strong>2X Coin Boost:</strong> Earn physical study rewards 2x faster</div>
+        <div>🛡️ <strong>Social Shield:</strong> Auto-penalize Insta/Snap/X/Shopping interruptions</div>
+        <div>👁️ <strong>Full AI Eye Tracking:</strong> 468 MediaPipe landmarks + 12 focus metrics</div>
+        <div>🎵 <strong>Lo-Fi &amp; Brown Noise:</strong> Unlimited ambient study soundscapes</div>
+        <div>📦 <strong>VIP Reward Dispatch:</strong> Free priority shipping on Bottle, Pad &amp; T-Shirt</div>
+      </div>
+
+      <button id="btnWebSubAction" style="width: 100%; height: 44px; background: linear-gradient(135deg, #2563eb, #1e3a8a); color: #fff; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; margin-bottom: 8px;">
+        Start 7-Day Free Trial (₹1,499/yr)
+      </button>
+      <div id="webSubDisclaimer" style="text-align: center; font-size: 11px; color: #64748b;">
+        No charge today. Cancel anytime before trial ends.
       </div>
     </div>
   </div>

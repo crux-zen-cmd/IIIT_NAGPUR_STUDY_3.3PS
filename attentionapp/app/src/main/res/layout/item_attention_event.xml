@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingVertical="9dp"
+    android:paddingHorizontal="12dp"
+    android:background="@color/bg_cream_card"
+    android:layout_marginBottom="4dp">
+
+    <!-- Type Icon / Indicator -->
+    <TextView
+        android:id="@+id/tvEventIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:gravity="center"
+        android:text="⚡"
+        android:textSize="15sp"
+        android:background="@drawable/bg_circle_indicator" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="10dp">
+
+        <TextView
+            android:id="@+id/tvEventTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tab Switch Detected"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tvEventDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Real tab navigation event"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/tvEventTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="02:15:30"
+            android:textColor="@color/text_muted"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tvScorePenalty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-10%"
+            android:textColor="@color/status_lost"
+            android:textStyle="bold"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+</LinearLayout>

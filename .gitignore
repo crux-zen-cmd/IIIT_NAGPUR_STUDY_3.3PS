@@ -34,3 +34,12 @@ models/
 
 # MP3 scratch files
 *.mp3
+
+# Android Build & Local Configuration
+.gradle/
+build/
+**/build/
+local.properties
+*.apk
+*.aab
+.cxx/

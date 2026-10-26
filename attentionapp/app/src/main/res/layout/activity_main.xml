@@ -1,0 +1,2487 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_primary"
+    tools:context=".MainActivity">
+
+
+    <!-- 1. Universal Top Header -->
+    <LinearLayout
+        android:id="@+id/layoutTopHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/bg_secondary"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="10dp"
+        android:elevation="3dp">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🧠 AttentionAI"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"
+                android:textSize="17sp" />
+
+
+            <TextView
+                android:id="@+id/tvHeaderSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Deep Focus &amp; Rhythm Tracker"
+                android:textColor="@color/text_muted"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <!-- Streak Badge -->
+        <TextView
+            android:id="@+id/tvHeaderStreak"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="🔥 0 Days"
+            android:textColor="@color/status_distracted"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@drawable/bg_badge_distracted"
+            android:paddingHorizontal="10dp"
+            android:layout_marginEnd="6dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Coins Badge -->
+        <TextView
+            android:id="@+id/tvHeaderCoins"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="🪙 0.00"
+            android:textColor="#F59E0B"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@drawable/bg_badge_coins"
+            android:paddingHorizontal="9dp"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Profile Avatar Logo -->
+        <TextView
+            android:id="@+id/btnHeaderProfile"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:gravity="center"
+            android:text="👤"
+            android:textSize="17sp"
+            android:background="@drawable/bg_profile_avatar"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="User Profile" />
+    </LinearLayout>
+
+    <!-- 2. On-Screen Alert Banner (Visible when user switches tab/app) -->
+    <LinearLayout
+        android:id="@+id/layoutAlertBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_alert_banner"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⚠️"
+            android:textSize="22sp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="8dp">
+
+            <TextView
+                android:id="@+id/tvAlertBannerTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TAB SWITCH DETECTED - FOCUS LOST"
+                android:textColor="@color/status_lost"
+                android:textStyle="bold"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tvAlertBannerSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Away from study tab. Returning sooner saves focus score."
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnBannerReturn"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Return"
+            android:textColor="@color/text_on_taupe"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:background="@drawable/bg_button_restore"
+            android:paddingHorizontal="12dp" />
+    </LinearLayout>
+
+    <!-- 3. Central Content ViewPager / FrameLayout Container for 4 Tabs -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- ============================================================== -->
+        <!-- TAB 1: STUDY & LIVE SESSION                                    -->
+        <!-- ============================================================== -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/layoutTabStudy"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <!-- A. INACTIVE SESSION STATE: Start Session & Set Goal -->
+                <LinearLayout
+                    android:id="@+id/layoutSessionInactive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <!-- Start Session Card -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_session_card"
+                        android:padding="18dp"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🎯 What are you studying today?"
+                            android:textColor="@color/primary_taupe_deep"
+                            android:textStyle="bold"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Set your study subject. AttentionAI monitors tab switches, background apps, and rewards continuous focus with coins."
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="12dp" />
+
+                        <!-- Topic Input -->
+                        <EditText
+                            android:id="@+id/etSessionTopic"
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_url_input"
+                            android:hint="Enter study subject (e.g. Operating Systems)..."
+                            android:textColorHint="@color/text_muted"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp"
+                            android:paddingHorizontal="14dp"
+                            android:singleLine="true" />
+
+                        <!-- Quick Preset Topic Chips -->
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:scrollbars="none"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="16dp">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/chipAlgo"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="30dp"
+                                    android:text="💻 Algorithms"
+                                    android:textSize="11sp"
+                                    android:textColor="@color/primary_taupe_deep"
+                                    android:background="@drawable/bg_chip_topic"
+                                    android:gravity="center"
+                                    android:paddingHorizontal="12dp"
+                                    android:layout_marginEnd="6dp"
+                                    android:clickable="true"
+                                    android:focusable="true" />
+
+                                <TextView
+                                    android:id="@+id/chipMath"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="30dp"
+                                    android:text="📐 Mathematics"
+                                    android:textSize="11sp"
+                                    android:textColor="@color/primary_taupe_deep"
+                                    android:background="@drawable/bg_chip_topic"
+                                    android:gravity="center"
+                                    android:paddingHorizontal="12dp"
+                                    android:layout_marginEnd="6dp"
+                                    android:clickable="true"
+                                    android:focusable="true" />
+
+                                <TextView
+                                    android:id="@+id/chipExam"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="30dp"
+                                    android:text="📝 Exam Prep"
+                                    android:textSize="11sp"
+                                    android:textColor="@color/primary_taupe_deep"
+                                    android:background="@drawable/bg_chip_topic"
+                                    android:gravity="center"
+                                    android:paddingHorizontal="12dp"
+                                    android:layout_marginEnd="6dp"
+                                    android:clickable="true"
+                                    android:focusable="true" />
+
+                                <TextView
+                                    android:id="@+id/chipResearch"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="30dp"
+                                    android:text="🔬 Research"
+                                    android:textSize="11sp"
+                                    android:textColor="@color/primary_taupe_deep"
+                                    android:background="@drawable/bg_chip_topic"
+                                    android:gravity="center"
+                                    android:paddingHorizontal="12dp"
+                                    android:layout_marginEnd="6dp"
+                                    android:clickable="true"
+                                    android:focusable="true" />
+
+                                <TextView
+                                    android:id="@+id/chipReading"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="30dp"
+                                    android:text="📖 Reading"
+                                    android:textSize="11sp"
+                                    android:textColor="@color/primary_taupe_deep"
+                                    android:background="@drawable/bg_chip_topic"
+                                    android:gravity="center"
+                                    android:paddingHorizontal="12dp"
+                                    android:clickable="true"
+                                    android:focusable="true" />
+                            </LinearLayout>
+                        </HorizontalScrollView>
+
+                        <!-- Big Start Session Button -->
+                        <Button
+                            android:id="@+id/btnStartSession"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:text="🚀 Start Study Session"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_on_taupe"
+                            android:background="@drawable/bg_button_restore"
+                            android:elevation="2dp" />
+                    </LinearLayout>
+
+                    <!-- Today's Quick Metrics Snapshot Card -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@drawable/bg_session_card"
+                        android:padding="14dp"
+                        android:layout_marginBottom="12dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvInactiveStreak"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="🔥 0 Days"
+                                android:textColor="@color/status_distracted"
+                                android:textStyle="bold"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Current Streak"
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/border_cream" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvInactiveTodayTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0m"
+                                android:textColor="@color/primary_taupe_deep"
+                                android:textStyle="bold"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Today's Study"
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/border_cream" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvInactiveTotalSessions"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textColor="@color/status_focused"
+                                android:textStyle="bold"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sessions Done"
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/border_cream" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvInactiveCoins"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0.00"
+                                android:textColor="#F59E0B"
+                                android:textStyle="bold"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Coins"
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Permissions Quick Status Strip -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_session_card"
+                        android:padding="14dp"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🛡️ System Permissions Status"
+                            android:textColor="@color/primary_taupe_deep"
+                            android:textStyle="bold"
+                            android:textSize="13sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="8dp">
+
+                            <TextView
+                                android:id="@+id/tvUsageStatsStatus"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="📱 App Tracking: Tap to enable"
+                                android:textColor="@color/primary_taupe"
+                                android:textSize="11sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+
+                            <TextView
+                                android:id="@+id/tvNotifListenerStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="🔔 Notifs: Tap to enable"
+                                android:textColor="@color/primary_taupe"
+                                android:textSize="11sp"
+                                android:clickable="true"
+                                android:focusable="true" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- B. ACTIVE SESSION STATE: Huge Timer & Live Metrics -->
+                <LinearLayout
+                    android:id="@+id/layoutSessionActive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <!-- Prominent Timer Card -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_timer_card"
+                        android:padding="20dp"
+                        android:gravity="center"
+                        android:layout_marginBottom="12dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/bg_badge_focused"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="4dp">
+
+                            <TextView
+                                android:layout_width="8dp"
+                                android:layout_height="8dp"
+                                android:background="@drawable/bg_circle_indicator"
+                                android:backgroundTint="@color/status_focused" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=" LIVE SESSION ACTIVE"
+                                android:textColor="@color/status_focused"
+                                android:textStyle="bold"
+                                android:textSize="11sp"
+                                android:layout_marginStart="4dp" />
+                        </LinearLayout>
+
+                        <!-- Huge Stopwatch Timer -->
+                        <TextView
+                            android:id="@+id/tvSessionTimer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00:00"
+                            android:textColor="@color/primary_taupe_deep"
+                            android:textStyle="bold"
+                            android:textSize="44sp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="6dp" />
+
+                        <!-- Active Study Topic -->
+                        <TextView
+                            android:id="@+id/tvActiveSessionTopic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🎓 Topic: Algorithms Module"
+                            android:textColor="@color/primary_taupe_dark"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:gravity="center" />
+
+                        <!-- Live Coins Earned Indicator -->
+                        <TextView
+                            android:id="@+id/tvLiveCoinsEarned"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🪙 +0.00 Coins Earning"
+                            android:textColor="#B45309"
+                            android:textStyle="bold"
+                            android:textSize="12sp"
+                            android:background="@drawable/bg_card_coins"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="3dp"
+                            android:layout_marginTop="8dp" />
+                    </LinearLayout>
+
+                    <!-- Live Metrics Card -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_session_card"
+                        android:padding="16dp"
+                        android:layout_marginBottom="12dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Focus Score:"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="13sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvFocusScore"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="100%"
+                                android:textColor="@color/status_focused"
+                                android:textStyle="bold"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+
+                        <!-- Progress Bar -->
+                        <ProgressBar
+                            android:id="@+id/pbFocusScore"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="6dp"
+                            android:max="100"
+                            android:progress="100"
+                            android:progressTint="@color/status_focused"
+                            android:progressBackgroundTint="@color/border_cream"
+                            android:layout_marginVertical="10dp" />
+
+                        <!-- 3 Indicators Row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tvAttentionState"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="🟢 FOCUSED"
+                                android:textColor="@color/status_focused"
+                                android:textStyle="bold"
+                                android:textSize="11sp"
+                                android:gravity="center"
+                                android:background="@drawable/bg_badge_focused"
+                                android:paddingVertical="4dp"
+                                android:layout_marginEnd="4dp" />
+
+                            <TextView
+                                android:id="@+id/tvTabSwitches"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="⚡ 0 Switches"
+                                android:textColor="@color/status_distracted"
+                                android:textStyle="bold"
+                                android:textSize="11sp"
+                                android:gravity="center"
+                                android:background="@drawable/bg_badge_distracted"
+                                android:paddingVertical="4dp"
+                                android:layout_marginHorizontal="2dp" />
+
+                            <TextView
+                                android:id="@+id/tvNotifsStats"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.2"
+                                android:text="🔔 0 Recv (0 Ignored)"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="10sp"
+                                android:gravity="center"
+                                android:background="@drawable/bg_chip_topic"
+                                android:paddingVertical="4dp"
+                                android:layout_marginStart="4dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Focus Audio & Pomodoro Controller Card -->
+                    <LinearLayout
+                        android:id="@+id/cardFocusMusicController"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_session_card"
+                        android:padding="14dp"
+                        android:layout_marginBottom="12dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="38dp"
+                                android:layout_height="38dp"
+                                android:text="🎧"
+                                android:textSize="18sp"
+                                android:gravity="center"
+                                android:background="@drawable/bg_badge_focused" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginStart="10dp">
+
+                                <TextView
+                                    android:id="@+id/tvFocusMusicTitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="4h Brown Noise Pomodoro"
+                                    android:textColor="@color/primary_taupe_deep"
+                                    android:textStyle="bold"
+                                    android:textSize="13sp" />
+
+                                <TextView
+                                    android:id="@+id/tvFocusMusicStatus"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Continuous Audio: Playing 🟢"
+                                    android:textColor="@color/status_focused"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btnFocusMusicToggle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="34dp"
+                                android:text="⏸ Pause"
+                                android:textColor="@color/text_on_taupe"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_button_gradient"
+                                android:paddingHorizontal="12dp" />
+                        </LinearLayout>
+
+                        <!-- Secondary Actions: YouTube ADHD Pomodoro Stream button -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="10dp">
+
+                            <Button
+                                android:id="@+id/btnFocusMusicOpenYouTube"
+                                android:layout_width="0dp"
+                                android:layout_height="32dp"
+                                android:layout_weight="1"
+                                android:text="▶️ Open YouTube Stream"
+                                android:textColor="@color/primary_taupe_dark"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_chip_topic"
+                                android:paddingHorizontal="10dp" />
+
+                            <Button
+                                android:id="@+id/btnFocusMusicSilence"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:text="🔇 Mute Audio"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="11sp"
+                                android:background="@drawable/bg_card_unselected"
+                                android:paddingHorizontal="10dp"
+                                android:layout_marginStart="8dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- In-Session Action Button -->
+                    <Button
+                        android:id="@+id/btnEndSession"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="⏹ End Study Session &amp; Save"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:background="@drawable/bg_button_danger"
+                        android:elevation="2dp"
+                        android:layout_marginBottom="12dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- ============================================================== -->
+        <!-- TAB 2: ANALYTICS & HEATMAP DASHBOARD                           -->
+        <!-- ============================================================== -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/layoutTabAnalytics"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <!-- User Bar in Analytics -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_session_card"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="10dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:id="@+id/tvAnalyticsUserId"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="👤 student_01"
+                        android:textColor="@color/primary_taupe_deep"
+                        android:textStyle="bold"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/btnSwitchUserAnalytics"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Switch User ▾"
+                        android:textColor="@color/primary_taupe"
+                        android:textStyle="bold"
+                        android:textSize="12sp"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </LinearLayout>
+
+                <!-- Yesterday's Focus Performance Highlight Card -->
+                <LinearLayout
+                    android:id="@+id/cardYesterdayHighlight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_session_card"
+                    android:padding="14dp"
+                    android:layout_marginBottom="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="📅 Yesterday's Study Performance"
+                            android:textColor="@color/primary_taupe_deep"
+                            android:textStyle="bold"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tvYesterdaySessionsBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="5 Sessions Done"
+                            android:textColor="@color/text_on_taupe"
+                            android:textStyle="bold"
+                            android:textSize="11sp"
+                            android:background="@drawable/bg_button_gradient"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="3dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Analytics from your 5 completed study sessions yesterday"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="10dp" />
+
+                    <!-- 3 Metric Blocks Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <!-- Block 1: Duration -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:background="@drawable/bg_card_unselected"
+                            android:padding="8dp"
+                            android:layout_marginEnd="4dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="TOTAL TIME"
+                                android:textColor="@color/text_muted"
+                                android:textSize="9sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvYesterdayTotalStudy"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="2h 37m"
+                                android:textColor="@color/primary_taupe_deep"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:layout_marginTop="2dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="157 mins"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="9sp" />
+                        </LinearLayout>
+
+                        <!-- Block 2: Avg Focus -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:background="@drawable/bg_card_unselected"
+                            android:padding="8dp"
+                            android:layout_marginHorizontal="2dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="AVG FOCUS"
+                                android:textColor="@color/text_muted"
+                                android:textSize="9sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvYesterdayAvgFocus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="81%"
+                                android:textColor="@color/status_focused"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:layout_marginTop="2dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Peak: 100%"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="9sp" />
+                        </LinearLayout>
+
+                        <!-- Block 3: Coins -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:background="@drawable/bg_card_unselected"
+                            android:padding="8dp"
+                            android:layout_marginStart="4dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="COINS EARNED"
+                                android:textColor="@color/text_muted"
+                                android:textSize="9sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvYesterdayCoins"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="🪙 32.06"
+                                android:textColor="#F59E0B"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:layout_marginTop="2dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="5 sessions"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="9sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- 4 Metrics Grid -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+
+                    <!-- Today Study Time -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_session_card"
+                        android:padding="12dp"
+                        android:layout_marginEnd="6dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="⏱️ TODAY'S STUDY"
+                            android:textColor="@color/text_muted"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvAnalyticsTodayStudy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0m"
+                            android:textColor="@color/primary_taupe_deep"
+                            android:textStyle="bold"
+                            android:textSize="17sp"
+                            android:layout_marginTop="2dp" />
+
+                        <TextView
+                            android:id="@+id/tvAnalyticsTodaySessions"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0 sessions"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+
+                    <!-- Total Coins -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_session_card"
+                        android:padding="12dp"
+                        android:layout_marginStart="6dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🪙 COINS BALANCE"
+                            android:textColor="@color/text_muted"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvAnalyticsTotalCoins"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0.00"
+                            android:textColor="#F59E0B"
+                            android:textStyle="bold"
+                            android:textSize="17sp"
+                            android:layout_marginTop="2dp" />
+
+                        <TextView
+                            android:id="@+id/tvAnalyticsTodayCoins"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="+0.00 today"
+                            android:textColor="@color/status_focused"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- LeetCode / GitHub Style Streak & Heatmap Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@color/dark_card_bg"
+                    android:padding="14dp"
+                    android:elevation="2dp"
+                    android:layout_marginBottom="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="🔥 Study Activity &amp; Streaks"
+                            android:textColor="@color/dark_text_primary"
+                            android:textStyle="bold"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tvAnalyticsHeatmapStreakBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🔥 0 Day Streak"
+                            android:textColor="#F59E0B"
+                            android:textStyle="bold"
+                            android:textSize="11sp"
+                            android:background="@drawable/bg_badge_distracted"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="3dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tap any cell to inspect date, session count, and study duration."
+                        android:textColor="@color/dark_text_secondary"
+                        android:textSize="11sp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Streak Counters Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@color/dark_card_surface"
+                        android:padding="10dp"
+                        android:layout_marginBottom="10dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvAnalyticsCurrentStreak"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0 Days"
+                                android:textColor="#F59E0B"
+                                android:textStyle="bold"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Current Streak"
+                                android:textColor="@color/dark_text_muted"
+                                android:textSize="9sp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/dark_border" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvAnalyticsMaxStreak"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0 Days"
+                                android:textColor="#38BDF8"
+                                android:textStyle="bold"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Best Streak"
+                                android:textColor="@color/dark_text_muted"
+                                android:textSize="9sp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/dark_border" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvAnalyticsActiveDays"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0 Days"
+                                android:textColor="#10B981"
+                                android:textStyle="bold"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Active Days"
+                                android:textColor="@color/dark_text_muted"
+                                android:textSize="9sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Interactive Heatmap Scrollable Grid -->
+                    <HorizontalScrollView
+                        android:id="@+id/scrollAnalyticsHeatmap"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none">
+
+                        <com.example.attentionapp.StreakHeatmapView
+                            android:id="@+id/viewAnalyticsHeatmap"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </HorizontalScrollView>
+
+                    <!-- Selected Day Detail View -->
+                    <TextView
+                        android:id="@+id/tvAnalyticsHeatmapDayDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Tap any square in the heatmap above to view details"
+                        android:textColor="@color/dark_text_secondary"
+                        android:textSize="11sp"
+                        android:gravity="center"
+                        android:paddingVertical="8dp"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <!-- AI Best Study Time Window Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_session_card"
+                    android:padding="14dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="💡 Best Time to Study"
+                        android:textColor="@color/primary_taupe_deep"
+                        android:textStyle="bold"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvAnalyticsBestTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Complete study sessions to discover your peak focus window"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <!-- Focus Score Timeline Chart Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@color/dark_card_bg"
+                    android:padding="14dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📈 Focus Score Timeline"
+                        android:textColor="@color/dark_text_primary"
+                        android:textStyle="bold"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Percentage of focus maintained across recent study sessions."
+                        android:textColor="@color/dark_text_secondary"
+                        android:textSize="11sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <com.example.attentionapp.FocusScoreLineChartView
+                        android:id="@+id/chartAnalyticsScoreTimeline"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp" />
+                </LinearLayout>
+
+                <!-- Study Duration Bar Chart Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@color/dark_card_bg"
+                    android:padding="14dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📊 Study Duration by Day (Minutes)"
+                        android:textColor="@color/dark_text_primary"
+                        android:textStyle="bold"
+                        android:textSize="14sp" />
+
+                    <com.example.attentionapp.StudyDurationBarChartView
+                        android:id="@+id/chartAnalyticsDurationByDay"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+
+                <!-- Recent Completed Sessions History -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_session_card"
+                    android:padding="14dp"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📜 Completed Sessions History"
+                        android:textColor="@color/primary_taupe_deep"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/tvAnalyticsEmptyHistory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No sessions completed yet. Start your first session in the Study tab!"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:gravity="center"
+                        android:paddingVertical="12dp"
+                        android:visibility="gone" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvAnalyticsSessionHistory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- ============================================================== -->
+        <!-- TAB 3: TELEMETRY & ATTENTION EVENTS LOG                        -->
+        <!-- ============================================================== -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/layoutTabTelemetry"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <!-- Real-Time Attention Events Log Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_session_card"
+                    android:padding="14dp"
+                    android:layout_marginBottom="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="📋 Live Attention Events Stream"
+                            android:textColor="@color/primary_taupe_deep"
+                            android:textStyle="bold"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tvClearLogs"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Clear"
+                            android:textColor="@color/primary_taupe"
+                            android:textStyle="bold"
+                            android:textSize="12sp"
+                            android:clickable="true"
+                            android:focusable="true" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvEmptyLogNotice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="No events yet. Start a session or switch apps to see live telemetry."
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:paddingVertical="16dp"
+                        android:visibility="visible" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvEvents"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:scrollbars="vertical" />
+                </LinearLayout>
+
+                <!-- External Apps Distraction Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_session_card"
+                    android:padding="14dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📱 Apps Opened During Sessions"
+                        android:textColor="@color/primary_taupe_deep"
+                        android:textStyle="bold"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Identifies external apps accessed while your study session was active."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/tvNoExternalAppsTelemetry"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="✨ No distracting apps opened in current session!"
+                        android:textColor="@color/status_focused"
+                        android:textSize="11sp"
+                        android:gravity="center"
+                        android:paddingVertical="10dp" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutExternalAppsTelemetryList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+
+                <!-- Notification Resistance Breakdown Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_session_card"
+                    android:padding="14dp"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🔔 Notification Resistance"
+                        android:textColor="@color/primary_taupe_deep"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvTelemetryNotifsRecv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textColor="@color/primary_taupe_deep"
+                                android:textStyle="bold"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Received"
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/border_cream" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvTelemetryNotifsIgnored"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textColor="@color/status_focused"
+                                android:textStyle="bold"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Resisted"
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/border_cream" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvTelemetryNotifsInterrupted"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textColor="@color/status_lost"
+                                android:textStyle="bold"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Interrupted"
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- ============================================================== -->
+        <!-- TAB 4: PROFILE & SETTINGS                                      -->
+        <!-- ============================================================== -->
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/layoutTabProfile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <!-- User Profile Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/bg_session_card"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:text="👤"
+                        android:textSize="26sp"
+                        android:gravity="center"
+                        android:background="@drawable/bg_profile_avatar" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="14dp">
+
+                        <TextView
+                            android:id="@+id/tvProfileUserId"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="student_01"
+                            android:textColor="@color/primary_taupe_deep"
+                            android:textStyle="bold"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Active Study Profile"
+                            android:textColor="@color/text_muted"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btnProfileSwitchUser"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:text="Switch"
+                        android:textColor="@color/text_on_taupe"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_button_restore"
+                        android:paddingHorizontal="14dp" />
+                </LinearLayout>
+
+                <!-- ====================================================== -->
+                <!-- FOCUS PRO SUBSCRIPTION CARD                           -->
+                <!-- ====================================================== -->
+                <LinearLayout
+                    android:id="@+id/cardFocusProSubscription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_session_card"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="6dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="👑 Focus Pro"
+                            android:textColor="@color/primary_taupe_deep"
+                            android:textStyle="bold"
+                            android:textSize="15sp" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/tvProfileProStatusBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Free Starter"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_badge_distracted"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="3dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvProfileProSubtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Get 2X Coins on all sessions, strict social media shield, and full AI eye telemetry. Monthly &amp; Annual plans available."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="12dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <Button
+                            android:id="@+id/btnProfileOpenSubscription"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="⭐ View Plans · Save 58%"
+                            android:textColor="@color/text_on_taupe"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_button_gradient"
+                            android:stateListAnimator="@null"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvProfileProPlanPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="from ₹125/mo"
+                            android:textColor="@color/primary_taupe"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- ====================================================== -->
+                <!-- REWARDS STORE / PURCHASE DASHBOARD                     -->
+                <!-- ====================================================== -->
+                <LinearLayout
+                    android:id="@+id/cardStorePurchaseDashboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_session_card"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp">
+
+                    <!-- Store Header Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="🛍️ Focus Rewards Store"
+                            android:textColor="@color/primary_taupe_deep"
+                            android:textStyle="bold"
+                            android:textSize="15sp" />
+
+                        <Button
+                            android:id="@+id/btnStoreAddTestCoins"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:text="+5,000 🪙 (Test)"
+                            android:textColor="@color/primary_taupe"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_chip_topic"
+                            android:paddingHorizontal="10dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Redeem coins earned through deep focus sessions for physical study gear."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- User Available Coins Bar -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/bg_card_unselected"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="10dp"
+                        android:layout_marginBottom="14dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🪙"
+                            android:textSize="20sp"
+                            android:layout_marginEnd="10dp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="YOUR AVAILABLE BALANCE"
+                                android:textColor="@color/text_muted"
+                                android:textSize="9sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvStoreAvailableCoins"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="32.06 Coins"
+                                android:textColor="#F59E0B"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvStoreClaimedCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0 Claimed"
+                            android:textColor="@color/status_focused"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_badge_focused"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="3dp" />
+                    </LinearLayout>
+
+                    <!-- ITEM 1: Water Bottle (5,000 Coins) -->
+                    <LinearLayout
+                        android:id="@+id/layoutStoreItemBottle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_card_unselected"
+                        android:padding="12dp"
+                        android:layout_marginBottom="10dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
+                                android:text="🍶"
+                                android:textSize="22sp"
+                                android:gravity="center"
+                                android:background="@drawable/bg_profile_avatar" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginStart="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Focus Hydro Water Bottle"
+                                    android:textColor="@color/primary_taupe_deep"
+                                    android:textStyle="bold"
+                                    android:textSize="13sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="750ml Vacuum-Insulated Stainless Steel"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="10sp" />
+
+                                <TextView
+                                    android:id="@+id/tvStoreBottlePrice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="🪙 5,000 Coins"
+                                    android:textColor="#F59E0B"
+                                    android:textStyle="bold"
+                                    android:textSize="11sp"
+                                    android:layout_marginTop="2dp" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btnStoreBuyBottle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="36dp"
+                                android:text="Buy (5,000 🪙)"
+                                android:textColor="@color/text_on_taupe"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_button_restore"
+                                android:paddingHorizontal="12dp" />
+                        </LinearLayout>
+
+                        <!-- Progress Bar & Status -->
+                        <ProgressBar
+                            android:id="@+id/pbStoreBottleProgress"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="4dp"
+                            android:max="5000"
+                            android:progress="32"
+                            android:progressTint="#F59E0B"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvStoreBottleStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Need 4,968 more coins to redeem"
+                            android:textColor="@color/text_muted"
+                            android:textSize="9sp"
+                            android:layout_marginTop="3dp" />
+                    </LinearLayout>
+
+                    <!-- ITEM 2: Study Pad (7,000 Coins) -->
+                    <LinearLayout
+                        android:id="@+id/layoutStoreItemPad"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_card_unselected"
+                        android:padding="12dp"
+                        android:layout_marginBottom="10dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
+                                android:text="📝"
+                                android:textSize="22sp"
+                                android:gravity="center"
+                                android:background="@drawable/bg_profile_avatar" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginStart="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Ergonomic Focus Study Pad"
+                                    android:textColor="@color/primary_taupe_deep"
+                                    android:textStyle="bold"
+                                    android:textSize="13sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="900×400mm Extended Anti-Slip Desk Mat"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="10sp" />
+
+                                <TextView
+                                    android:id="@+id/tvStorePadPrice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="🪙 7,000 Coins"
+                                    android:textColor="#F59E0B"
+                                    android:textStyle="bold"
+                                    android:textSize="11sp"
+                                    android:layout_marginTop="2dp" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btnStoreBuyPad"
+                                android:layout_width="wrap_content"
+                                android:layout_height="36dp"
+                                android:text="Buy (7,000 🪙)"
+                                android:textColor="@color/text_on_taupe"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_button_restore"
+                                android:paddingHorizontal="12dp" />
+                        </LinearLayout>
+
+                        <!-- Progress Bar & Status -->
+                        <ProgressBar
+                            android:id="@+id/pbStorePadProgress"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="4dp"
+                            android:max="7000"
+                            android:progress="32"
+                            android:progressTint="#F59E0B"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvStorePadStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Need 6,968 more coins to redeem"
+                            android:textColor="@color/text_muted"
+                            android:textSize="9sp"
+                            android:layout_marginTop="3dp" />
+                    </LinearLayout>
+
+                    <!-- ITEM 3: T-Shirt (10,000 Coins) -->
+                    <LinearLayout
+                        android:id="@+id/layoutStoreItemTshirt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_card_unselected"
+                        android:padding="12dp"
+                        android:layout_marginBottom="10dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
+                                android:text="👕"
+                                android:textSize="22sp"
+                                android:gravity="center"
+                                android:background="@drawable/bg_profile_avatar" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginStart="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Deep Focus Edition T-Shirt"
+                                    android:textColor="@color/primary_taupe_deep"
+                                    android:textStyle="bold"
+                                    android:textSize="13sp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="100% Combed Heavyweight Organic Cotton"
+                                    android:textColor="@color/text_secondary"
+                                    android:textSize="10sp" />
+
+                                <TextView
+                                    android:id="@+id/tvStoreTshirtPrice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="🪙 10,000 Coins"
+                                    android:textColor="#F59E0B"
+                                    android:textStyle="bold"
+                                    android:textSize="11sp"
+                                    android:layout_marginTop="2dp" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btnStoreBuyTshirt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="36dp"
+                                android:text="Buy (10,000 🪙)"
+                                android:textColor="@color/text_on_taupe"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:background="@drawable/bg_button_restore"
+                                android:paddingHorizontal="12dp" />
+                        </LinearLayout>
+
+                        <!-- Progress Bar & Status -->
+                        <ProgressBar
+                            android:id="@+id/pbStoreTshirtProgress"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="4dp"
+                            android:max="10000"
+                            android:progress="32"
+                            android:progressTint="#F59E0B"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvStoreTshirtStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Need 9,968 more coins to redeem"
+                            android:textColor="@color/text_muted"
+                            android:textSize="9sp"
+                            android:layout_marginTop="3dp" />
+                    </LinearLayout>
+
+                    <!-- Claimed Orders Summary Box (Visible when items bought) -->
+                    <LinearLayout
+                        android:id="@+id/layoutStoreOrdersList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="4dp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <!-- Chronotype Preference Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_session_card"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⏰ Study Rhythm &amp; Chronotype"
+                        android:textColor="@color/primary_taupe_deep"
+                        android:textStyle="bold"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tailors your optimal focus recommendations and session schedules."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="10dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/tvProfileChronotypeStatus"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="☀️ Day Person (Early Bird)"
+                            android:textColor="@color/primary_taupe_deep"
+                            android:textStyle="bold"
+                            android:textSize="13sp" />
+
+                        <Button
+                            android:id="@+id/btnProfileToggleChronotype"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:text="Change"
+                            android:textColor="@color/primary_taupe_deep"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_chip_topic"
+                            android:paddingHorizontal="12dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Android Permissions Manager Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_session_card"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🛡️ System Permissions Manager"
+                        android:textColor="@color/primary_taupe_deep"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="10dp" />
+
+                    <!-- Perm 1: Usage Access -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="App Usage Stats Access"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/tvProfileUsagePermStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Status: Checking..."
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/btnProfileGrantUsage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:text="Grant"
+                            android:textColor="@color/primary_taupe_deep"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_chip_topic"
+                            android:paddingHorizontal="10dp" />
+                    </LinearLayout>
+
+                    <!-- Perm 2: Notification Listener -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Notification Interruption Listener"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/tvProfileNotifPermStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Status: Checking..."
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/btnProfileGrantNotif"
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:text="Grant"
+                            android:textColor="@color/primary_taupe_deep"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_chip_topic"
+                            android:paddingHorizontal="10dp" />
+                    </LinearLayout>
+
+                    <!-- Perm 3: Post Notifications -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Attention Alert Notifications"
+                                android:textColor="@color/text_primary"
+                                android:textStyle="bold"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/tvProfilePostNotifPermStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Status: Checking..."
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/btnProfileGrantPostNotif"
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:text="Grant"
+                            android:textColor="@color/primary_taupe_deep"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_chip_topic"
+                            android:paddingHorizontal="10dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Lifetime Profile Summary Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/bg_session_card"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📊 Lifetime Learning Stats"
+                        android:textColor="@color/primary_taupe_deep"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="10dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvProfileLifetimeSessions"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textColor="@color/primary_taupe_deep"
+                                android:textStyle="bold"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total Sessions"
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/border_cream" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvProfileLifetimeHours"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0m"
+                                android:textColor="@color/primary_taupe_deep"
+                                android:textStyle="bold"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total Time"
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/border_cream" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvProfileLifetimeCoins"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0.00"
+                                android:textColor="#F59E0B"
+                                android:textStyle="bold"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Coins Earned"
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/border_cream" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvProfileAverageSessionTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0m"
+                                android:textColor="@color/status_focused"
+                                android:textStyle="bold"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Avg / Session"
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </FrameLayout>
+
+    <!-- 4. Modern Bottom Navigation Bar -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bottom_nav"
+        app:itemIconTint="@color/nav_item_selector"
+        app:itemTextColor="@color/nav_item_selector"
+        app:itemRippleColor="@color/primary_taupe_light"
+        app:menu="@menu/bottom_nav_menu"
+        app:labelVisibilityMode="labeled"
+        android:elevation="8dp" />
+
+</LinearLayout>

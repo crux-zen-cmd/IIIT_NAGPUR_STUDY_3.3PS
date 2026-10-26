@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AttentionAI</string>
+    <string name="channel_name">AttentionAI Alerts</string>
+    <string name="channel_description">Notifies when student switches away from active study tabs</string>
+    <string name="hint_username">e.g. yash_naik or yash@email.com</string>
+    <string name="hint_password">Enter your password</string>
+    <string name="hint_display_name">Your display name</string>
+    <string name="hint_email">your@email.com</string>
+</resources>

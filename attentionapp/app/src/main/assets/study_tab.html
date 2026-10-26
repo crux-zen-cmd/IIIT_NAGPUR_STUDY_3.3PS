@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Portal: Dynamic Programming Masterclass</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --primary: #6366f1;
+      --accent: #10b981;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      line-height: 1.6;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      border: 1px solid #10b981;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.3); }
+    }
+    h1 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    p.subtitle { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+    
+    .dom-status-card {
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      font-size: 13px;
+    }
+    .dom-status-card .title { font-weight: 600; color: #f1f5f9; display: flex; justify-content: space-between; }
+    .dom-status-card .detail { color: var(--muted); font-size: 12px; margin-top: 4px; font-family: monospace; }
+    
+    .lecture-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .lecture-card h2 { font-size: 16px; margin-bottom: 8px; color: #a5b4fc; }
+    
+    .code-snippet {
+      background: #090d16;
+      border: 1px solid #273549;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 13px;
+      color: #38bdf8;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+
+    .quiz-box {
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 14px;
+    }
+    .quiz-title { font-weight: 600; font-size: 14px; margin-bottom: 8px; color: #c7d2fe; }
+    .btn-option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-option:hover, .btn-option:active {
+      background: #334155;
+      border-color: #6366f1;
+    }
+    .feedback { font-size: 12px; font-weight: 600; margin-top: 6px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="badge">
+    <span class="pulse-dot"></span>
+    DOM Attention Tracker Active
+  </div>
+
+  <h1>📘 Algorithms & Dynamic Programming</h1>
+  <p class="subtitle">Module 4: Memoization vs Tabulation | Lesson 2</p>
+
+  <div class="dom-status-card" id="domStatusCard">
+    <div class="title">
+      <span>DOM Visibility State:</span>
+      <span id="visStatus" style="color:#10b981;">VISIBLE</span>
+    </div>
+    <div class="detail" id="domDetail">Listeners: visibilitychange, blur, focus, activity</div>
+  </div>
+
+  <div class="lecture-card">
+    <h2>1. The Optimal Substructure Principle</h2>
+    <p style="font-size: 13px; color: #cbd5e1;">
+      A problem exhibits optimal substructure if an optimal solution to the problem contains within it optimal solutions to subproblems.
+    </p>
+
+    <div class="code-snippet">
+// Fibonacci with Tabulation (Bottom-Up)
+function fib(n) {
+  let dp = [0, 1];
+  for (let i = 2; i <= n; i++) {
+    dp[i] = dp[i - 1] + dp[i - 2];
+  }
+  return dp[n];
+}
+    </div>
+
+    <div class="quiz-box">
+      <div class="quiz-title">Quick Check: What is the time complexity of the tabulated Fibonacci above?</div>
+      <button class="btn-option" onclick="checkAnswer(this, false)">A) O(2^n) Exponential</button>
+      <button class="btn-option" onclick="checkAnswer(this, true)">B) O(n) Linear</button>
+      <button class="btn-option" onclick="checkAnswer(this, false)">C) O(log n) Logarithmic</button>
+      <div class="feedback" id="quizFeedback"></div>
+    </div>
+  </div>
+
+  <script>
+    // ══════════════════════════════════════════════════════════════════
+    // DOM ATTENTION TRACKING ENGINE
+    // Listens for visibilitychange, pagehide, blur, focus, and user activity
+    // ══════════════════════════════════════════════════════════════════
+    (function initDomAttentionTracking() {
+      const visStatusEl = document.getElementById("visStatus");
+      const domDetailEl = document.getElementById("domDetail");
+
+      function updateUI(status, isHidden) {
+        if (visStatusEl) {
+          visStatusEl.textContent = status;
+          visStatusEl.style.color = isHidden ? "#ef4444" : "#10b981";
+        }
+        if (domDetailEl) {
+          domDetailEl.textContent = "Last Event: " + status + " @ " + new Date().toLocaleTimeString();
+        }
+      }
+
+      // 1. Page Visibility API (Detects when tab is switched away or hidden)
+      document.addEventListener("visibilitychange", function() {
+        const isHidden = document.hidden || document.visibilityState === "hidden";
+        updateUI(isHidden ? "HIDDEN (TAB SWITCH)" : "VISIBLE (ACTIVE)", isHidden);
+
+        if (window.AndroidAttentionBridge && window.AndroidAttentionBridge.onDomVisibilityChanged) {
+          window.AndroidAttentionBridge.onDomVisibilityChanged(
+            isHidden,
+            document.title,
+            window.location.href
+          );
+        }
+      });
+
+      // 2. Window Blur (Detects focus loss / window change)
+      window.addEventListener("blur", function() {
+        updateUI("BLURRED (FOCUS LOST)", true);
+        if (window.AndroidAttentionBridge && window.AndroidAttentionBridge.onWindowBlur) {
+          window.AndroidAttentionBridge.onWindowBlur(document.title);
+        }
+      });
+
+      // 3. Window Focus (Detects student return)
+      window.addEventListener("focus", function() {
+        updateUI("FOCUSED (RETURNED)", false);
+        if (window.AndroidAttentionBridge && window.AndroidAttentionBridge.onWindowFocus) {
+          window.AndroidAttentionBridge.onWindowFocus(document.title);
+        }
+      });
+
+      // 4. Activity events (Heartbeat of active student learning)
+      let lastActivityTime = 0;
+      ["click", "keydown", "scroll", "touchstart"].forEach(function(evt) {
+        window.addEventListener(evt, function() {
+          const now = Date.now();
+          if (now - lastActivityTime > 3000) {
+            lastActivityTime = now;
+            if (window.AndroidAttentionBridge && window.AndroidAttentionBridge.onUserActivity) {
+              window.AndroidAttentionBridge.onUserActivity();
+            }
+          }
+        }, { passive: true });
+      });
+
+      console.log("[DOM Attention Tracker] Initialized successfully in Study Tab.");
+    })();
+
+    function checkAnswer(btn, isCorrect) {
+      const fb = document.getElementById("quizFeedback");
+      fb.style.display = "block";
+      if (isCorrect) {
+        fb.style.color = "#10b981";
+        fb.textContent = "✓ Correct! O(n) linear time with O(n) space.";
+        btn.style.borderColor = "#10b981";
+        btn.style.background = "rgba(16, 185, 129, 0.2)";
+      } else {
+        fb.style.color = "#ef4444";
+        fb.textContent = "✗ Incorrect. Remember each subproblem is computed once!";
+        btn.style.borderColor = "#ef4444";
+      }
+      if (window.AndroidAttentionBridge && window.AndroidAttentionBridge.onUserActivity) {
+        window.AndroidAttentionBridge.onUserActivity();
+      }
+    }
+  </script>
+</body>
+</html>

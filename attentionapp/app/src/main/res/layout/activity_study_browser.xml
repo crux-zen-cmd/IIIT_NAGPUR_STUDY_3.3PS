@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/studyBrowserRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_light_yellow">
+
+    <!-- Top Bar with Back, Title, and Tab controls -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/bg_cream_card"
+        android:padding="8dp">
+
+        <ImageButton
+            android:id="@+id/btnBrowserClose"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/primary_taupe_deep"
+            android:contentDescription="Close Browser" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="🌐 Study Resource Browser"
+            android:textColor="@color/primary_taupe_deep"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginStart="8dp" />
+
+        <ImageButton
+            android:id="@+id/btnBrowserAddTab"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@android:drawable/ic_input_add"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/primary_taupe"
+            android:contentDescription="New Tab" />
+    </LinearLayout>
+
+    <!-- Tab Strip -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/browserTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:background="@color/bg_cream_secondary"
+        app:tabIndicatorColor="@color/primary_taupe"
+        app:tabIndicatorHeight="3dp"
+        app:tabMode="scrollable"
+        app:tabSelectedTextColor="@color/primary_taupe_deep"
+        app:tabTextColor="@color/text_secondary"
+        app:tabTextAppearance="@style/TextAppearance.Material3.LabelSmall" />
+
+    <!-- Navigation & URL Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/bg_cream_card"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp">
+
+        <ImageButton
+            android:id="@+id/btnBrowserBack"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@android:drawable/ic_media_previous"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/primary_taupe"
+            android:contentDescription="Back" />
+
+        <ImageButton
+            android:id="@+id/btnBrowserForward"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@android:drawable/ic_media_next"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="@color/primary_taupe"
+            android:contentDescription="Forward" />
+
+        <EditText
+            android:id="@+id/etBrowserUrl"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_url_input"
+            android:hint="Search or enter URL..."
+            android:textColorHint="@color/text_muted"
+            android:textColor="@color/text_primary"
+            android:textSize="12sp"
+            android:paddingHorizontal="10dp"
+            android:singleLine="true"
+            android:imeOptions="actionGo"
+            android:layout_marginHorizontal="6dp" />
+
+        <Button
+            android:id="@+id/btnBrowserGo"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="Go"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_on_taupe"
+            android:background="@drawable/bg_button_restore"
+            android:paddingHorizontal="10dp" />
+    </LinearLayout>
+
+    <!-- WebView Container -->
+    <FrameLayout
+        android:id="@+id/browserWebViewContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/bg_light_yellow">
+
+        <ProgressBar
+            android:id="@+id/pbBrowserLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/primary_taupe"
+            android:visibility="gone" />
+    </FrameLayout>
+
+</LinearLayout>

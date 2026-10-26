@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_glass_card"
+        android:padding="20dp">
+
+        <!-- Header with Crown & Title -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:text="👑"
+                android:textSize="32sp"
+                android:gravity="center"
+                android:background="@drawable/bg_badge_coins"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unlock Focus Pro"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Double your study productivity with AI eye tracking, strict distraction shields, and 2X store coins."
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:layout_marginTop="4dp"
+                android:paddingHorizontal="12dp" />
+
+            <!-- Current Tier Badge -->
+            <TextView
+                android:id="@+id/tvSubCurrentBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Current: Free Starter"
+                android:textColor="@color/primary_taupe"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_chip_topic"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+
+        <!-- PLANS SELECTOR -->
+        <!-- PLAN 1: ANNUAL PLAN (RECOMMENDED) -->
+        <LinearLayout
+            android:id="@+id/cardPlanYearly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card_selected"
+            android:padding="14dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/radioPlanYearly"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:gravity="center"
+                    android:text="✓"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/bg_circle_indicator"
+                    android:backgroundTint="@color/primary_taupe"
+                    android:layout_marginEnd="10dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Annual Plan"
+                            android:textColor="@color/text_primary"
+                            android:textStyle="bold"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="BEST VALUE · SAVE 58%"
+                            android:textColor="@color/accent_amber"
+                            android:textSize="9sp"
+                            android:textStyle="bold"
+                            android:background="@drawable/bg_badge_distracted"
+                            android:paddingHorizontal="6dp"
+                            android:paddingVertical="2dp"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="7-Day Free Trial · Billed annually at ₹1,499/yr"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹125"
+                        android:textColor="@color/primary_taupe"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="/ month"
+                        android:textColor="@color/text_muted"
+                        android:textSize="10sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- PLAN 2: MONTHLY PLAN -->
+        <LinearLayout
+            android:id="@+id/cardPlanMonthly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card_unselected"
+            android:padding="14dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/radioPlanMonthly"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/bg_circle_indicator"
+                    android:backgroundTint="@color/border_primary"
+                    android:layout_marginEnd="10dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Monthly Plan"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Flexible month-to-month · Cancel anytime"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹299"
+                        android:textColor="@color/primary_taupe"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="/ month"
+                        android:textColor="@color/text_muted"
+                        android:textSize="10sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- PRO PERKS CHECKLIST -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card_aurora"
+            android:padding="14dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EVERYTHING INCLUDED IN FOCUS PRO"
+                android:textColor="@color/text_muted"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="6dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="⚡" android:textSize="14sp" android:layout_marginEnd="8dp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="2X Coin Boost: Redeem water bottle, pad &amp; shirt 2x faster"
+                    android:textColor="@color/text_primary" android:textSize="12sp" android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="6dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="🛡️" android:textSize="14sp" android:layout_marginEnd="8dp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Smart Social Shield: Auto-penalize Insta/Snap/X/Shopping"
+                    android:textColor="@color/text_secondary" android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="6dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="👁️" android:textSize="14sp" android:layout_marginEnd="8dp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Full AI Eye &amp; Gaze Tracking Telemetry (All 12 metrics)"
+                    android:textColor="@color/text_secondary" android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="6dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="🎵" android:textSize="14sp" android:layout_marginEnd="8dp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Unlimited Lo-Fi &amp; Brown Noise Soundscapes"
+                    android:textColor="@color/text_secondary" android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="👑" android:textSize="14sp" android:layout_marginEnd="8dp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="VIP Gold Profile Crown &amp; Free Store Reward Dispatch"
+                    android:textColor="@color/text_secondary" android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Primary CTA Button -->
+        <Button
+            android:id="@+id/btnSubAction"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Start 7-Day Free Trial (₹1,499/yr)"
+            android:textColor="@color/text_on_taupe"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:background="@drawable/bg_button_gradient"
+            android:stateListAnimator="@null"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvSubDisclaimer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No charge today. Cancel anytime in Google Play before trial ends."
+            android:textColor="@color/text_muted"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Secondary Actions (Cancel subscription if active / Close) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnSubCancelPlan"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="Cancel Plan"
+                android:textColor="@color/accent_rose"
+                android:textStyle="bold"
+                android:textSize="11sp"
+                android:background="@drawable/bg_card_aurora"
+                android:stateListAnimator="@null"
+                android:visibility="gone"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnSubClose"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="Maybe Later"
+                android:textColor="@color/text_secondary"
+                android:textStyle="bold"
+                android:textSize="11sp"
+                android:background="@drawable/bg_card_aurora"
+                android:stateListAnimator="@null" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

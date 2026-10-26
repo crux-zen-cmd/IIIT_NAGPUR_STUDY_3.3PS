@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SocialFeed - Distraction Zone</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #1a2234;
+      --border: #2e3a52;
+      --red: #ef4444;
+      --amber: #f59e0b;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      line-height: 1.5;
+    }
+    .alert-banner {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--red);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .alert-icon { font-size: 24px; }
+    .alert-text h3 { font-size: 14px; color: #fca5a5; margin-bottom: 2px; }
+    .alert-text p { font-size: 12px; color: #cbd5e1; }
+    
+    .feed-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .feed-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ec4899, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .username { font-weight: 600; font-size: 13px; }
+    .feed-body { font-size: 13px; color: #e2e8f0; margin-bottom: 10px; }
+    .feed-actions { display: flex; gap: 16px; font-size: 12px; color: var(--muted); }
+
+    .test-actions {
+      margin-top: 18px;
+      background: #111827;
+      border: 1px dashed #374151;
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+    }
+    .test-actions h4 { font-size: 13px; color: #9ca3af; margin-bottom: 8px; }
+    .test-btn {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="alert-banner">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-text">
+      <h3>Distraction Tab Detected</h3>
+      <p>This tab is classified as non-study content. Attention monitoring is active.</p>
+    </div>
+  </div>
+
+  <div class="feed-card">
+    <div class="feed-header">
+      <div class="avatar">🔥</div>
+      <div class="username">ViralClips_Daily</div>
+    </div>
+    <div class="feed-body">
+      Top 10 gaming moments of 2026 that you definitely shouldn't be watching while studying algorithm lectures! 😂🎮
+    </div>
+    <div class="feed-actions">
+      <span>❤️ 42.1k</span>
+      <span>💬 1,420</span>
+      <span>🔄 Share</span>
+    </div>
+  </div>
+
+  <div class="feed-card">
+    <div class="feed-header">
+      <div class="avatar" style="background: linear-gradient(135deg, #06b6d4, #3b82f6)">🚀</div>
+      <div class="username">TechMemesHub</div>
+    </div>
+    <div class="feed-body">
+      When you tell yourself "I'll just switch tabs for 30 seconds" and 2 hours vanish.
+    </div>
+    <div class="feed-actions">
+      <span>❤️ 19.8k</span>
+      <span>💬 580</span>
+      <span>🔄 Share</span>
+    </div>
+  </div>
+
+  <div class="test-actions">
+    <h4>Simulate Manual DOM Tab Switch Event</h4>
+    <button class="test-btn" onclick="triggerManualTabSwitch()">
+      Simulate DOM Tab Switch Event
+    </button>
+  </div>
+
+  <script>
+    (function() {
+      // DOM tracking on distraction tab
+      document.addEventListener("visibilitychange", function() {
+        if (window.AndroidAttentionBridge && window.AndroidAttentionBridge.onDomVisibilityChanged) {
+          window.AndroidAttentionBridge.onDomVisibilityChanged(
+            document.hidden || document.visibilityState === "hidden",
+            document.title,
+            window.location.href
+          );
+        }
+      });
+    })();
+
+    function triggerManualTabSwitch() {
+      if (window.AndroidAttentionBridge && window.AndroidAttentionBridge.onTabSwitchTriggered) {
+        window.AndroidAttentionBridge.onTabSwitchTriggered("Distraction Tab", "User clicked simulated switch in DOM");
+      }
+    }
+  </script>
+</body>
+</html>

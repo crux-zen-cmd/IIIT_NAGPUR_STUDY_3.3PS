@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_glass_card"
+    android:padding="20dp">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_marginBottom="14dp">
+
+        <FrameLayout
+            android:layout_width="64dp"
+            android:layout_height="64dp">
+            <View
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@drawable/bg_avatar_gradient" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="👤"
+                android:textSize="28sp"
+                android:gravity="center" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvProfileUserId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="student_01"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/tvProfileStreakTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🔥 4 Days Streak Active"
+            android:textColor="@color/accent_amber"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:background="@drawable/bg_badge_distracted"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="3dp"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+
+    <!-- Metrics List -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_card_aurora"
+        android:padding="14dp"
+        android:layout_marginBottom="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:text="Total Sessions:"
+                android:textColor="@color/text_secondary" android:textSize="12sp" />
+            <TextView android:id="@+id/tvProfileTotalSessions"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="18 sessions" android:textColor="@color/text_primary"
+                android:textStyle="bold" android:textSize="12sp" />
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/border_primary" android:layout_marginVertical="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:text="Sessions per Day:"
+                android:textColor="@color/text_secondary" android:textSize="12sp" />
+            <TextView android:id="@+id/tvProfileAvgSessionsPerDay"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="3.2 / day" android:textColor="@color/accent_violet_light"
+                android:textStyle="bold" android:textSize="12sp" />
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/border_primary" android:layout_marginVertical="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:text="Avg. Session Length:"
+                android:textColor="@color/text_secondary" android:textSize="12sp" />
+            <TextView android:id="@+id/tvProfileAvgDuration"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="26m 40s" android:textColor="@color/accent_lime"
+                android:textStyle="bold" android:textSize="12sp" />
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/border_primary" android:layout_marginVertical="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:text="All-Time Study:"
+                android:textColor="@color/text_secondary" android:textSize="12sp" />
+            <TextView android:id="@+id/tvProfileAllTimeTime"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="7h 48m" android:textColor="@color/accent_cyan"
+                android:textStyle="bold" android:textSize="12sp" />
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/border_primary" android:layout_marginVertical="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:text="🪙 Coins Earned:"
+                android:textColor="@color/text_secondary" android:textSize="12sp" />
+            <TextView android:id="@+id/tvProfileTotalCoins"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="0.00 🪙" android:textColor="@color/accent_amber"
+                android:textStyle="bold" android:textSize="13sp" />
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/border_primary" android:layout_marginVertical="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:text="Study Rhythm:"
+                android:textColor="@color/text_secondary" android:textSize="12sp" />
+            <TextView android:id="@+id/tvProfileChronotype"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="☀️ Day Person" android:textColor="@color/text_primary"
+                android:textStyle="bold" android:textSize="12sp" />
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="@color/border_primary" android:layout_marginVertical="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:text="Membership:"
+                android:textColor="@color/text_secondary" android:textSize="12sp" />
+            <TextView android:id="@+id/tvProfileSubscriptionTier"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Free Starter" android:textColor="@color/primary_taupe"
+                android:textStyle="bold" android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnProfileSubscription"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="👑 Upgrade to Focus Pro (Save 58%)"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:background="@drawable/bg_button_gradient"
+        android:stateListAnimator="@null"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnProfileChangeChronotype"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:text="☀️/🌙 Change Study Rhythm"
+        android:textColor="@color/text_primary"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        android:background="@drawable/bg_card_violet_glow"
+        android:stateListAnimator="@null"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnProfileSwitchUser"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:text="✏️ Switch / Rename User"
+        android:textColor="@color/text_secondary"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        android:background="@drawable/bg_card_aurora"
+        android:stateListAnimator="@null"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnProfileSettings"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:text="⚙️ Notification Settings"
+        android:textColor="@color/text_secondary"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        android:background="@drawable/bg_card_aurora"
+        android:stateListAnimator="@null"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnProfileLogout"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:text="🚪 Sign Out"
+        android:textColor="@color/accent_rose"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        android:background="@drawable/bg_card_aurora"
+        android:stateListAnimator="@null"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/btnProfileClose"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="Close"
+        android:textColor="@color/text_primary"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        android:background="@drawable/bg_button_gradient"
+        android:stateListAnimator="@null" />
+
+</LinearLayout>

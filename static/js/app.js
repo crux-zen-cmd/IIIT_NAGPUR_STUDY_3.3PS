@@ -892,6 +892,64 @@ if (expoModalBackdrop) {
   });
 }
 
+// ── Focus Pro Modal ─────────────────────────────────────────────
+const btnFocusProModal = document.getElementById("btnFocusProModal");
+const focusProModalBackdrop = document.getElementById("focusProModalBackdrop");
+const btnCloseFocusProModal = document.getElementById("btnCloseFocusProModal");
+const webPlanYearly = document.getElementById("webPlanYearly");
+const webPlanMonthly = document.getElementById("webPlanMonthly");
+const btnWebSubAction = document.getElementById("btnWebSubAction");
+const webSubDisclaimer = document.getElementById("webSubDisclaimer");
+
+let isWebYearly = true;
+
+if (btnFocusProModal && focusProModalBackdrop) {
+  btnFocusProModal.addEventListener("click", () => focusProModalBackdrop.classList.remove("hidden"));
+}
+if (btnCloseFocusProModal && focusProModalBackdrop) {
+  btnCloseFocusProModal.addEventListener("click", () => focusProModalBackdrop.classList.add("hidden"));
+}
+if (focusProModalBackdrop) {
+  focusProModalBackdrop.addEventListener("click", (e) => {
+    if (e.target === focusProModalBackdrop) focusProModalBackdrop.classList.add("hidden");
+  });
+}
+
+if (webPlanYearly && webPlanMonthly) {
+  webPlanYearly.addEventListener("click", () => {
+    isWebYearly = true;
+    webPlanYearly.style.border = "2px solid #3b82f6";
+    webPlanYearly.style.background = "rgba(30, 58, 138, 0.35)";
+    webPlanMonthly.style.border = "1.5px solid rgba(255, 255, 255, 0.1)";
+    webPlanMonthly.style.background = "rgba(255, 255, 255, 0.04)";
+    if (btnWebSubAction) btnWebSubAction.textContent = "Start 7-Day Free Trial (₹1,499/yr)";
+    if (webSubDisclaimer) webSubDisclaimer.textContent = "No charge today. Cancel anytime before trial ends.";
+  });
+
+  webPlanMonthly.addEventListener("click", () => {
+    isWebYearly = false;
+    webPlanMonthly.style.border = "2px solid #3b82f6";
+    webPlanMonthly.style.background = "rgba(30, 58, 138, 0.35)";
+    webPlanYearly.style.border = "1.5px solid rgba(255, 255, 255, 0.1)";
+    webPlanYearly.style.background = "rgba(255, 255, 255, 0.04)";
+    if (btnWebSubAction) btnWebSubAction.textContent = "Subscribe Monthly (₹299/mo)";
+    if (webSubDisclaimer) webSubDisclaimer.textContent = "Billed monthly at ₹299. Cancel anytime in account settings.";
+  });
+}
+
+if (btnWebSubAction) {
+  btnWebSubAction.addEventListener("click", () => {
+    if (focusProModalBackdrop) focusProModalBackdrop.classList.add("hidden");
+    const planName = isWebYearly ? "Focus Pro Annual (7-Day Free Trial)" : "Focus Pro Monthly";
+    showToast(`👑 Subscribed to ${planName}! 2X Coin Multiplier & Pro AI unlocked.`);
+    if (btnFocusProModal) {
+      btnFocusProModal.textContent = "👑 Pro Active";
+      btnFocusProModal.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
+      btnFocusProModal.style.color = "#000";
+    }
+  });
+}
+
 btnCopyUserId.addEventListener("click", async () => {
   if (currentUser) {
     await navigator.clipboard.writeText(currentUser.user_id);

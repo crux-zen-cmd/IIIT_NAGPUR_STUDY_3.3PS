@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Keep White & Dark Blue (Indigo) consistent -->
+    <style name="Base.Theme.Attentionapp" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/accent_violet</item>
+        <item name="colorSecondary">@color/accent_cyan</item>
+        <item name="android:colorBackground">@color/bg_primary</item>
+        <item name="colorSurface">@color/bg_card</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:statusBarColor">@color/bg_secondary</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/nav_bg</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowBackground">@color/bg_primary</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+    </style>
+    <style name="Theme.Attentionapp" parent="Base.Theme.Attentionapp" />
+</resources>

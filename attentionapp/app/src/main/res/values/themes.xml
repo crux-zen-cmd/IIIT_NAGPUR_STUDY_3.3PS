@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme — White & Dark Blue (Indigo) -->
+    <style name="Base.Theme.Attentionapp" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/accent_violet</item>
+        <item name="colorPrimaryVariant">@color/accent_violet_dim</item>
+        <item name="colorSecondary">@color/accent_cyan</item>
+        <item name="colorTertiary">@color/accent_lime</item>
+        <item name="android:colorBackground">@color/bg_primary</item>
+        <item name="colorSurface">@color/bg_card</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOnBackground">@color/text_primary</item>
+        <item name="android:statusBarColor">@color/bg_secondary</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/nav_bg</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowBackground">@color/bg_primary</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_muted</item>
+        <item name="android:editTextStyle">@style/Widget.Aurora.EditText</item>
+        <item name="editTextStyle">@style/Widget.Aurora.EditText</item>
+        <item name="materialButtonStyle">@style/Widget.Aurora.Button</item>
+    </style>
+
+    <style name="Theme.Attentionapp" parent="Base.Theme.Attentionapp" />
+
+    <!-- Login/Splash theme -->
+    <style name="Theme.Attentionapp.Login" parent="Base.Theme.Attentionapp">
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/bg_primary</item>
+    </style>
+
+    <!-- EditText style -->
+    <style name="Widget.Aurora.EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_muted</item>
+        <item name="android:background">@drawable/bg_input_aurora</item>
+    </style>
+
+    <!-- Button style -->
+    <style name="Widget.Aurora.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/text_on_accent</item>
+        <item name="backgroundTint">@color/accent_violet</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
+
+    <!-- Button: Cyan variant -->
+    <style name="Widget.Aurora.Button.Cyan" parent="Widget.Aurora.Button">
+        <item name="backgroundTint">@color/accent_cyan</item>
+    </style>
+
+    <!-- Button: Danger/Rose variant -->
+    <style name="Widget.Aurora.Button.Danger" parent="Widget.Aurora.Button">
+        <item name="backgroundTint">@color/accent_rose</item>
+    </style>
+
+    <!-- Button: Ghost (Outline) -->
+    <style name="Widget.Aurora.Button.Ghost" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textColor">@color/accent_violet</item>
+        <item name="strokeColor">@color/accent_violet</item>
+        <item name="cornerRadius">12dp</item>
+    </style>
+
+    <!-- Card style -->
+    <style name="Widget.Aurora.Card" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/bg_card</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="strokeColor">@color/border_primary</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+    <!-- Dialog style -->
+    <style name="Theme.Aurora.Dialog" parent="Theme.MaterialComponents.Dialog">
+        <item name="android:windowBackground">@color/bg_card</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="colorAccent">@color/accent_violet</item>
+    </style>
+</resources>
